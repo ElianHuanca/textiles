@@ -1,0 +1,103 @@
+CREATE TABLE sucursales(
+    id TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    sucursal VARCHAR(100) NOT NULL,
+);
+
+CREATE TABLE productos(
+    id TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    producto VARCHAR(100) NOT NULL,
+    costo DECIMAL(10, 2) NOT NULL DEFAULT 0,
+);
+
+CREATE TABLE colores(
+    id TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    color VARCHAR(100) NOT NULL,
+    codigo VARCHAR(100) NOT NULL,
+);
+
+CREATE TABLE inventario (
+    id_sucursal TINYINT UNSIGNED NOT NULL,
+    id_producto TINYINT UNSIGNED NOT NULL,
+    id_color TINYINT UNSIGNED NOT NULL,
+    stock DECIMAL(10, 2) NOT NULL DEFAULT 0,
+    UNIQUE (id_sucursal, id_producto, id_color),
+    FOREIGN KEY (id_sucursal) REFERENCES sucursales(id),
+    FOREIGN KEY (id_producto) REFERENCES productos(id),
+    FOREIGN KEY (id_color) REFERENCES colores(id)
+);
+
+CREATE TABLE ventas(
+    id INT UNSIGNED PRIMARY KEY,
+    id_sucursal INT NOT NULL,
+    fecha DATE NOT NULL,
+    total DECIMAL(10, 2) NOT NULL,
+    descuento DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (id_sucursal) REFERENCES sucursales(id)
+);
+
+CREATE TABLE venta_producto (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_venta INT UNSIGNED NOT NULL,
+    id_producto TINYINT UNSIGNED NOT NULL,
+    id_color TINYINT UNSIGNED NOT NULL,
+    cantidad DECIMAL(10, 2) NOT NULL,
+    precio DECIMAL(10, 2) NOT NULL,
+    subtotal DECIMAL(10, 2) NOT NULL,
+    ganancias DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (id_venta) REFERENCES ventas(id),
+    FOREIGN KEY (id_producto) REFERENCES productos(id),
+    FOREIGN KEY (id_color) REFERENCES colores(id)
+);
+
+CREATE TABLE compras(
+    id INT UNSIGNED PRIMARY KEY,
+    id_sucursal INT NOT NULL,
+    fecha DATE NOT NULL,
+    total DECIMAL(10, 2) NOT NULL,
+    totalag DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (id_sucursal) REFERENCES sucursales(id)
+);
+
+CREATE TABLE compra_producto (
+    id_compra INT UNSIGNED NOT NULL,
+    id_producto TINYINT UNSIGNED NOT NULL,
+    id_color TINYINT UNSIGNED NOT NULL,
+    cantidad DECIMAL(10, 2) NOT NULL,
+    precio DECIMAL(10, 2) NOT NULL,
+    subtotal DECIMAL(10, 2) NOT NULL,
+    PRIMARY KEY (id_compra, id_producto),
+    FOREIGN KEY (id_compra) REFERENCES compras(id),
+    FOREIGN KEY (id_producto) REFERENCES productos(id)
+);
+
+CREATE TABLE tipos_gastos(
+    id TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    tipo_gasto VARCHAR(100) NOT NULL,
+);
+
+CREATE TABLE gastos(
+    id INT UNSIGNED PRIMARY KEY,
+    id_tipo_gasto TINYINT UNSIGNED NOT NULL,  
+    monto DECIMAL(10, 2) NOT NULL,
+);
+
+CREATE TABLE compra(
+    id INT UNSIGNED PRIMARY KEY,
+    id_sucursal TINYINT UNSIGNED NOT NULL,
+    id_gasto INT UNSIGNED NOT NULL,
+    FOREIGN KEY (id_sucursal) REFERENCES sucursales(id),
+    FOREIGN KEY (id_gasto) REFERENCES gastos(id)
+);
+
+INSERT INTO sucursales (sucursal) VALUES ('Ramada');
+
+INSERT INTO productos (producto) VALUES 
+('Razo Suizo SemiLicra'),
+('Razo Suizo Rigido');
+
+INSERT INTO colores (color, codigo) VALUES 
+('Rojo', '#FF0000'),
+('Verde', '#00FF00'),
+('Azul', '#0000FF'),
+('Amarillo', '#FFFF00'),
+('Naranja', '#FFA500');
