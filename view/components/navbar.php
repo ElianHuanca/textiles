@@ -15,7 +15,7 @@
                 <a class="nav-link text-white" href="../controller/ventaControlador.php?action=obtenerVentas">Ventas</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white" href="../controller/comprasControlador.php?action=obtenerCompras">Compras</a>
+                <a class="nav-link text-white" href="../controller/compraControlador.php?action=obtenerCompras">Compras</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link text-white" href="../controller/sucursalControlador.php?action=obtenerSucursales">Sucursales</a>

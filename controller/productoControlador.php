@@ -40,7 +40,7 @@ class ProductoControlador
                                     <img src="../assets/editar.png" width="25px">
                                 </a>
                                 <a href="../controller/productoControlador.php?action=eliminar&id=' . $row['id'] . '" style="text-decoration: none;"                        
-                                    onclick="return confirm(\'¿Estás seguro de que deseas eliminar este usuario?\');">
+                                    onclick="return confirm(\'¿Estás seguro de que deseas eliminar este producto?\');">
                                     <img src="../assets/borrar.png" width="25px">
                                 </a>'
             ];

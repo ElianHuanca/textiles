@@ -1,6 +1,6 @@
 <?php
 
-class productoModelo
+class ProductoModelo
 {
     private $db;
 
@@ -8,6 +8,14 @@ class productoModelo
     {
         $this->db = $db;
     }
+
+    public function obtenerProductos(){
+        $query = "SELECT * FROM productos";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function obtenerProductosDatatable($search, $orderColumn, $orderDir, $start, $length)
     {
         $query = "SELECT * FROM productos WHERE 1 = 1 ";

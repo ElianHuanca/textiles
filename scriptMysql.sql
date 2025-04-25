@@ -54,7 +54,7 @@ CREATE TABLE compras(
     id_sucursal TINYINT UNSIGNED NOT NULL,
     fecha DATE NOT NULL,
     total DECIMAL(10, 2) NOT NULL,
-    totalag DECIMAL(10, 2) NOT NULL,
+    total_gastos DECIMAL(10, 2) NOT NULL,
     FOREIGN KEY (id_sucursal) REFERENCES sucursales(id)
 );
 
@@ -79,7 +79,7 @@ CREATE TABLE tipos_gastos(
 CREATE TABLE gastos(
     id_tipo_gasto TINYINT UNSIGNED NOT NULL,  
     id_compra INT UNSIGNED NOT NULL,
-    monto DECIMAL(10, 2) NOT NULL,
+    gasto DECIMAL(10, 2) NOT NULL,
     PRIMARY KEY (id_tipo_gasto, id_compra),
     FOREIGN KEY (id_compra) REFERENCES compras(id),
     FOREIGN KEY (id_tipo_gasto) REFERENCES tipos_gastos(id)
@@ -92,8 +92,12 @@ INSERT INTO productos (producto) VALUES
 ('Razo Suizo Rigido');
 
 INSERT INTO colores (color, codigo) VALUES 
-('Rojo', '#FF0000'),
-('Verde', '#00FF00'),
-('Azul', '#0000FF'),
-('Amarillo', '#FFFF00'),
-('Naranja', '#FFA500');
+('Perla', 'EAE0C8');
+
+INSERT INTO tipos_gastos (tipo_gasto) VALUES 
+('Transporte Terrestre'),
+('Transporte Maritimo'),
+('Transporte Aereo'),
+('Nacionalizacion'),
+('Poliza'),
+('Taxi');

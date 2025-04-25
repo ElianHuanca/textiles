@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet">
-    <title>Lista De Productos</title>
+    <title>Lista De Compras</title>
     <link rel="stylesheet" href="../view/css/tablestyle.css">
 </head>
 
@@ -24,9 +24,9 @@
     <div class="d-flex" id="wrapper">
         <div class="w-100 p-4">
             <?php include '../view/components/header.php'; ?>
-            <h4>Lista De Productos</h4>
+            <h4>Lista De Compras</h4>
             <div class="float-end d-flex gap-2 align-items-center">
-                <a href="../controller/productoControlador.php?action=crear" class="btn btn-primary">Registrar Producto</a>
+                <a href="../controller/compraControlador.php?action=crear" class="btn btn-primary">Registrar Compra</a>
                 <!-- <form method="post" action="../controlador/ticketControlador.php?action=crear">
                     <button type="submit" class="btn btn-primary">Registrar Ticket</button>
                 </form> -->
@@ -37,8 +37,10 @@
                 <thead class="thead-light">
                     <tr>
                         <th>id</th>
-                        <th>Producto</th>
-                        <th>Costo Promedio Ponderado</th>
+                        <th>Fecha</th>
+                        <th>Total Compras</th>
+                        <th>Total Gastos</th>
+                        <th>Sucursal</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -52,15 +54,21 @@
     <script src="../view/js/datatableconfig.js"></script>
     <script>
         $(document).ready(function() {
-            const urlProductos = "../controller/productoControlador.php?action=productos";
-            const columnsProductos = [{
+            const url = "../controller/compraControlador.php?action=compras";
+            const columns = [{
                     data: "id"
                 },
                 {
-                    data: "producto"
+                    data: "fecha"
                 },
                 {
-                    data: "costo"
+                    data: "total"
+                },
+                {
+                    data: "total_gastos"
+                },
+                {
+                    data: "sucursal"
                 },
                 {
                     data: "acciones",
@@ -68,7 +76,7 @@
                     searchable: false
                 }
             ];
-            $('#miTabla').DataTable(getBaseDataTableConfig(urlProductos, columnsProductos));
+            $('#miTabla').DataTable(getBaseDataTableConfig(url,columns));
         });
     </script>
 </body>
