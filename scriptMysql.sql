@@ -16,14 +16,14 @@ CREATE TABLE colores(
 );
 
 CREATE TABLE inventario (
-    id_sucursal TINYINT UNSIGNED NOT NULL,
-    id_producto TINYINT UNSIGNED NOT NULL,
-    id_color TINYINT UNSIGNED NOT NULL,
+    sucursal_id TINYINT UNSIGNED NOT NULL,
+    producto_id TINYINT UNSIGNED NOT NULL,
+    color_id TINYINT UNSIGNED NOT NULL,
     stock DECIMAL(10, 2) NOT NULL DEFAULT 0,
-    PRIMARY KEY (id_sucursal, id_producto, id_color),
-    FOREIGN KEY (id_sucursal) REFERENCES sucursales(id),
-    FOREIGN KEY (id_producto) REFERENCES productos(id),
-    FOREIGN KEY (id_color) REFERENCES colores(id)
+    PRIMARY KEY (sucursal_id, producto_id, color_id),
+    FOREIGN KEY (sucursal_id) REFERENCES sucursales(id),
+    FOREIGN KEY (producto_id) REFERENCES productos(id),
+    FOREIGN KEY (color_id) REFERENCES colores(id)
 );
 
 CREATE TABLE ventas(
@@ -31,44 +31,44 @@ CREATE TABLE ventas(
     fecha DATE NOT NULL,
     total DECIMAL(10, 2) NOT NULL,
     descuento DECIMAL(10, 2) NOT NULL,
-    id_sucursal TINYINT UNSIGNED NOT NULL,
-    FOREIGN KEY (id_sucursal) REFERENCES sucursales(id)
+    sucursal_id TINYINT UNSIGNED NOT NULL,
+    FOREIGN KEY (sucursal_id) REFERENCES sucursales(id)
 );
 
-CREATE TABLE venta_producto (
-    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    id_venta INT UNSIGNED NOT NULL,
-    id_producto TINYINT UNSIGNED NOT NULL,
-    id_color TINYINT UNSIGNED NOT NULL,
+CREATE TABLE venta_producto (    
+    venta_id INT UNSIGNED NOT NULL,
+    producto_id TINYINT UNSIGNED NOT NULL,
+    color_id TINYINT UNSIGNED NOT NULL,
     cantidad DECIMAL(10, 2) NOT NULL,
     precio DECIMAL(10, 2) NOT NULL,
     subtotal DECIMAL(10, 2) NOT NULL,
     ganancias DECIMAL(10, 2) NOT NULL,
-    FOREIGN KEY (id_venta) REFERENCES ventas(id),
-    FOREIGN KEY (id_producto) REFERENCES productos(id),
-    FOREIGN KEY (id_color) REFERENCES colores(id)
+    PRIMARY KEY (venta_id, producto_id, color_id),
+    FOREIGN KEY (venta_id) REFERENCES ventas(id),
+    FOREIGN KEY (producto_id) REFERENCES productos(id),
+    FOREIGN KEY (color_id) REFERENCES colores(id)
 );
 
 CREATE TABLE compras(
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    id_sucursal TINYINT UNSIGNED NOT NULL,
+    sucursal_id TINYINT UNSIGNED NOT NULL,
     fecha DATE NOT NULL,
     total DECIMAL(10, 2) NOT NULL,
     total_gastos DECIMAL(10, 2) NOT NULL,
-    FOREIGN KEY (id_sucursal) REFERENCES sucursales(id)
+    FOREIGN KEY (sucursal_id) REFERENCES sucursales(id)
 );
 
 CREATE TABLE compra_producto (
-    id_compra INT UNSIGNED NOT NULL,
-    id_producto TINYINT UNSIGNED NOT NULL,
-    id_color TINYINT UNSIGNED NOT NULL,
+    compra_id INT UNSIGNED NOT NULL,
+    producto_id TINYINT UNSIGNED NOT NULL,
+    color_id TINYINT UNSIGNED NOT NULL,
     cantidad DECIMAL(10, 2) NOT NULL,
     precio DECIMAL(10, 2) NOT NULL,
-    subtotal DECIMAL(10, 2) NOT NULL,
-    PRIMARY KEY (id_compra, id_producto, id_color),
-    FOREIGN KEY (id_compra) REFERENCES compras(id),
-    FOREIGN KEY (id_producto) REFERENCES productos(id),
-    FOREIGN KEY (id_color) REFERENCES colores(id)
+    subtotal DECIMAL(10, 2) NOT NULL,    
+    PRIMARY KEY (compra_id, producto_id, color_id),
+    FOREIGN KEY (compra_id) REFERENCES compras(id),
+    FOREIGN KEY (producto_id) REFERENCES productos(id),
+    FOREIGN KEY (color_id) REFERENCES colores(id)
 );
 
 CREATE TABLE tipos_gastos(
@@ -77,12 +77,12 @@ CREATE TABLE tipos_gastos(
 );
 
 CREATE TABLE gastos(
-    id_tipo_gasto TINYINT UNSIGNED NOT NULL,  
-    id_compra INT UNSIGNED NOT NULL,
+    tipo_gasto_id TINYINT UNSIGNED NOT NULL,  
+    compra_id INT UNSIGNED NOT NULL,
     gasto DECIMAL(10, 2) NOT NULL,
-    PRIMARY KEY (id_tipo_gasto, id_compra),
-    FOREIGN KEY (id_compra) REFERENCES compras(id),
-    FOREIGN KEY (id_tipo_gasto) REFERENCES tipos_gastos(id)
+    PRIMARY KEY (tipo_gasto_id, compra_id),
+    FOREIGN KEY (compra_id) REFERENCES compras(id),
+    FOREIGN KEY (tipo_gasto_id) REFERENCES tipos_gastos(id)
 );
 
 INSERT INTO sucursales (sucursal) VALUES ('Ramada');
@@ -101,3 +101,4 @@ INSERT INTO tipos_gastos (tipo_gasto) VALUES
 ('Nacionalizacion'),
 ('Poliza'),
 ('Taxi');
+

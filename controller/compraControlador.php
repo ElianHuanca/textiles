@@ -78,6 +78,56 @@ class CompraControlador
         $tipos_gastos = $this->tipoGastoModelo->obtenerTiposGastos();
         include '../view/compras/crear.php';
     }
+
+    public function crearCompra()
+    {
+        $dataCompra = [
+            'fecha' => date('Y-m-d'),
+            'total' => $_POST['total'],
+            'total_gastos' => $_POST['total_gastos'],
+            'sucursal_id' => $_POST['sucursal_id']
+        ];
+        $dataCompra = $this->compraModelo->crear($dataCompra, 'compras');
+        if ($_POST['gastos']) {
+            foreach ($_POST['gastos'] as $gasto) {
+                $dataGasto = [
+                    'compra_id' => $dataCompra['id'],
+                    'tipo_gasto_id' => $gasto['tipo_gasto_id'],
+                    'gasto' => $gasto['gasto']
+                ];
+                $this->compraModelo->crear($dataGasto, 'gastos');
+            }
+        }        
+        if ($_POST['productos']) {
+            foreach ($_POST['productos'] as $producto) {
+                $dataProducto = [
+                    'compra_id' => $dataCompra['id'],
+                    'producto_id' => $producto['producto_id'],
+                    'color_id' => $producto['color_id'],
+                    'cantidad' => $producto['cantidad'],
+                    'precio' => $producto['precio'],
+                    'subtotal' => $producto['subtotal']
+                ];
+                $dataProducto = $this->compraModelo->crear($dataProducto, 'compra_producto');                
+                $porcentaje = $producto['subtotal'] / $dataCompra['total'];
+                $gasto = $dataCompra['total_gastos'] * $porcentaje;
+                $dataProducto['gasto'] = $gasto;
+                $this->costoPromedioPonderado($dataProducto);
+                $this->productoModelo->actualizarStock($dataProducto['producto_id'],$dataProducto['color_id'],$_POST['sucursal_id'], $producto['cantidad']);
+            }
+        }
+    }
+
+    public function costoPromedioPonderado($dataProducto){
+        $stock = $this->sucursalModelo->obtenerStock($dataProducto['producto_id']);
+        $costo = $this->productoModelo->obtenerCosto($dataProducto['producto_id']);
+        $costoInventario = $stock * $costo;
+        $costoCompra = $dataProducto['subtotal'] + $dataProducto['gasto'];
+        $costoTotal = $costoInventario + $costoCompra;
+        $stockTotal = $stock + $dataProducto['cantidad'];
+        $costoUnitarioPromedioPonderado = $costoTotal / $stockTotal;
+        $this->productoModelo->actualizarCosto($dataProducto['producto_id'], $costoUnitarioPromedioPonderado);
+    }
 }
 
 $controller = new CompraControlador();

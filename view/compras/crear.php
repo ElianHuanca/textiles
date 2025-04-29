@@ -14,7 +14,7 @@
         <div class="w-100 p-4 text-center">
             <?php include '../view/components/header.php'; ?>
             <h4>Registrar Compra</h4>
-            <form action="../controller/compraControlador.php?action=crear" method="POST">
+            <form action="../controller/compraControlador.php?action=crearCompra" method="POST" id="formCompra">
                 <div class="row">
                     <div class="col-md-3 mb-3">
                         <label for="fecha" class="form-label">Fecha</label>
@@ -66,6 +66,7 @@
                     </div>
                 </div>
                 <button type="button" class="btn btn-secondary" onclick="agregarProducto();">Agregar Producto</button>
+                <input type="text" class="form-control" id="productos" name="productos" hidden>
                 <table class="table table-striped w-100" id="tablaProductos">
                     <thead>
                         <tr>
@@ -96,15 +97,16 @@
                     </div>
                 </div>
                 <button type="button" class="btn btn-secondary" onclick="agregarGasto();">Agregar Gasto</button>
+                <input type="text" class="form-control" id="gastos" name="gastos" hidden>
                 <table class="table table-striped w-100" id="tablaGastos">
                     <thead>
                         <tr>
                             <th>Tipo Gasto</th>
-                            <th>Gasto</th>                            
+                            <th>Gasto</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
-                    <tbody>                        
+                    <tbody>
                     </tbody>
                 </table>
                 <button type="submit" class="btn btn-primary">Registrar</button>
@@ -116,19 +118,22 @@
         const gastos = [];
         const productos = [];
 
-        function agregarGasto(){
+        function agregarGasto() {
             const tipoGastoId = document.getElementById('tipo_gasto_id').value;
             const gasto = document.getElementById('gasto').value;
             const tipoGastoText = document.querySelector(`#tipo_gasto_id option[value="${tipoGastoId}"]`).textContent;
+            const totalGastos = document.getElementById('total_gastos');
             const nuevoGasto = {
+                tipo_gasto_id: tipoGastoId,
                 tipo_gasto: tipoGastoText,
                 gasto: gasto
             };
             gastos.push(nuevoGasto);
+            totalGastos.value = parseFloat(totalGastos.value) + parseFloat(gasto);
             actualizarTablaGastos();
         }
 
-        function actualizarTablaGastos(){
+        function actualizarTablaGastos() {
             const tablaGastos = document.getElementById('tablaGastos').getElementsByTagName('tbody')[0];
             tablaGastos.innerHTML = '';
             gastos.forEach((gasto, index) => {
@@ -140,19 +145,21 @@
             });
         }
 
-        function eliminarGasto(index){
+        function eliminarGasto(index) {
+            const totalGastos = document.getElementById('total_gastos');
+            totalGastos.value = parseFloat(totalGastos.value) - parseFloat(gastos[index].gasto);
             gastos.splice(index, 1);
             actualizarTablaGastos();
         }
 
-        function agregarProducto(){
+        function agregarProducto() {
             const productoId = document.getElementById('producto_id').value;
             const colorId = document.getElementById('color_id').value;
             const cantidad = document.getElementById('cantidad').value;
             const precio = document.getElementById('precio').value;
             const productoText = document.querySelector(`#producto_id option[value="${productoId}"]`).textContent;
             const colorText = document.querySelector(`#color_id option[value="${colorId}"]`).textContent;
-            const total = document.getElementById('total'); 
+            const total = document.getElementById('total');
 
             const nuevoProducto = {
                 producto: productoText,
@@ -161,14 +168,14 @@
                 precio: precio,
                 color_id: colorId,
                 producto_id: productoId,
-                subtotal: cantidad * precio        
+                subtotal: cantidad * precio
             };
             total.value = parseFloat(total.value) + nuevoProducto.subtotal;
             productos.push(nuevoProducto);
             actualizarTablaProductos();
         }
 
-        function actualizarTablaProductos(){
+        function actualizarTablaProductos() {
             const tablaProductos = document.getElementById('tablaProductos').getElementsByTagName('tbody')[0];
             tablaProductos.innerHTML = '';
             productos.forEach((producto, index) => {
@@ -183,13 +190,23 @@
             });
         }
 
-        function eliminarProducto(index){
+        function eliminarProducto(index) {
             const total = document.getElementById('total');
             total.value = parseFloat(total.value) - productos[index].subtotal;
             productos.splice(index, 1);
             actualizarTablaProductos();
 
         }
+
+        document.getElementById('formCompra').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const productosInput = document.getElementById('productos');
+            const gastosInput = document.getElementById('gastos');
+            productosInput.value = JSON.stringify(productos);
+            gastosInput.value = JSON.stringify(gastos);
+            this.submit();
+        });
     </script>
 </body>
+
 </html>

@@ -54,4 +54,30 @@ class ProductoModelo
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC)['total'];
     }
+
+    public function obtenerCosto($producto_id){
+        $query = "SELECT costo FROM productos WHERE id= :producto_id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':producto_id', $producto_id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC)['costo'];
+    }
+
+    public function actualizarCosto($producto_id, $costo){
+        $query = "UPDATE productos SET costo= :costo WHERE id= :producto_id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':producto_id', $producto_id, PDO::PARAM_INT);
+        $stmt->bindParam(':costo', $costo, PDO::PARAM_STR);
+        return $stmt->execute();
+    }
+
+    public function actualizarStock($producto_id,$color_id,$sucursal_id, $cantidad){
+        $query = "UPDATE inventario SET stock= stock + :cantidad WHERE id= :producto_id AND color_id= :color_id AND sucursal_id= :sucursal_id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':producto_id', $producto_id, PDO::PARAM_INT);
+        $stmt->bindParam(':color_id', $color_id, PDO::PARAM_INT);
+        $stmt->bindParam(':sucursal_id', $sucursal_id, PDO::PARAM_INT);
+        $stmt->bindValue(':cantidad', $cantidad);
+        return $stmt->execute();
+    }
 }
