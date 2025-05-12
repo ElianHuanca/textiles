@@ -31,9 +31,12 @@ CREATE TABLE ventas(
     fecha DATE NOT NULL,
     total DECIMAL(10, 2) NOT NULL,
     descuento DECIMAL(10, 2) NOT NULL,
+    total_ganancias DECIMAL(10, 2) NOT NULL,
     sucursal_id TINYINT UNSIGNED NOT NULL,
     FOREIGN KEY (sucursal_id) REFERENCES sucursales(id)
 );
+
+ALTER TABLE ventas ADD COLUMN total_ganancias DECIMAL(10, 2) NOT NULL;
 
 CREATE TABLE venta_producto (    
     venta_id INT UNSIGNED NOT NULL,
@@ -44,7 +47,7 @@ CREATE TABLE venta_producto (
     subtotal DECIMAL(10, 2) NOT NULL,
     ganancias DECIMAL(10, 2) NOT NULL,
     PRIMARY KEY (venta_id, producto_id, color_id),
-    FOREIGN KEY (venta_id) REFERENCES ventas(id),
+    FOREIGN KEY (venta_id) REFERENCES ventas(id) ON DELETE CASCADE,
     FOREIGN KEY (producto_id) REFERENCES productos(id),
     FOREIGN KEY (color_id) REFERENCES colores(id)
 );
@@ -66,9 +69,9 @@ CREATE TABLE compra_producto (
     precio DECIMAL(10, 2) NOT NULL,
     subtotal DECIMAL(10, 2) NOT NULL,    
     PRIMARY KEY (compra_id, producto_id, color_id),
-    FOREIGN KEY (compra_id) REFERENCES compras(id),
+    FOREIGN KEY (compra_id) REFERENCES compras(id) ON DELETE CASCADE,
     FOREIGN KEY (producto_id) REFERENCES productos(id),
-    FOREIGN KEY (color_id) REFERENCES colores(id)
+    FOREIGN KEY (color_id) REFERENCES colores(id) 
 );
 
 CREATE TABLE tipos_gastos(
@@ -81,9 +84,48 @@ CREATE TABLE gastos(
     compra_id INT UNSIGNED NOT NULL,
     gasto DECIMAL(10, 2) NOT NULL,
     PRIMARY KEY (tipo_gasto_id, compra_id),
-    FOREIGN KEY (compra_id) REFERENCES compras(id),
+    FOREIGN KEY (compra_id) REFERENCES compras(id) ON DELETE CASCADE,
     FOREIGN KEY (tipo_gasto_id) REFERENCES tipos_gastos(id)
 );
+
+DELIMITER $$
+
+CREATE TRIGGER after_insert_sucursal
+AFTER INSERT ON sucursales
+FOR EACH ROW
+BEGIN
+  INSERT INTO inventario (sucursal_id, producto_id, color_id, stock)
+  SELECT NEW.id, p.id, c.id, 0
+  FROM productos p, colores c;
+END$$
+
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE TRIGGER after_insert_producto
+AFTER INSERT ON productos
+FOR EACH ROW
+BEGIN
+  INSERT INTO inventario (sucursal_id, producto_id, color_id, stock)
+  SELECT s.id, NEW.id, c.id, 0
+  FROM sucursales s, colores c;
+END$$
+
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE TRIGGER after_insert_color
+AFTER INSERT ON colores
+FOR EACH ROW
+BEGIN
+  INSERT INTO inventario (sucursal_id, producto_id, color_id, stock)
+  SELECT s.id, p.id, NEW.id, 0
+  FROM sucursales s, productos p;
+END$$
+
+DELIMITER ;
 
 INSERT INTO sucursales (sucursal) VALUES ('Ramada');
 
@@ -94,6 +136,7 @@ INSERT INTO productos (producto) VALUES
 INSERT INTO colores (color, codigo) VALUES 
 ('Perla', 'EAE0C8');
 
+
 INSERT INTO tipos_gastos (tipo_gasto) VALUES 
 ('Transporte Terrestre'),
 ('Transporte Maritimo'),
@@ -101,4 +144,3 @@ INSERT INTO tipos_gastos (tipo_gasto) VALUES
 ('Nacionalizacion'),
 ('Poliza'),
 ('Taxi');
-

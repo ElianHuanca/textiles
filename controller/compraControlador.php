@@ -88,8 +88,9 @@ class CompraControlador
             'sucursal_id' => $_POST['sucursal_id']
         ];
         $dataCompra = $this->compraModelo->crear($dataCompra, 'compras');
-        if ($_POST['gastos']) {
-            foreach ($_POST['gastos'] as $gasto) {
+        $gastos = json_decode($_POST['gastos'], true);
+        if ($gastos) {
+            foreach ($gastos as $gasto) {
                 $dataGasto = [
                     'compra_id' => $dataCompra['id'],
                     'tipo_gasto_id' => $gasto['tipo_gasto_id'],
@@ -97,36 +98,77 @@ class CompraControlador
                 ];
                 $this->compraModelo->crear($dataGasto, 'gastos');
             }
-        }        
-        if ($_POST['productos']) {
-            foreach ($_POST['productos'] as $producto) {
+        }
+        $productos = json_decode($_POST['productos'], true);
+        if ($productos) {
+            foreach ($productos as $producto) {
                 $dataProducto = [
                     'compra_id' => $dataCompra['id'],
                     'producto_id' => $producto['producto_id'],
                     'color_id' => $producto['color_id'],
                     'cantidad' => $producto['cantidad'],
                     'precio' => $producto['precio'],
-                    'subtotal' => $producto['subtotal']
+                    'subtotal' => $producto['subtotal']                    
                 ];
-                $dataProducto = $this->compraModelo->crear($dataProducto, 'compra_producto');                
-                $porcentaje = $producto['subtotal'] / $dataCompra['total'];
-                $gasto = $dataCompra['total_gastos'] * $porcentaje;
-                $dataProducto['gasto'] = $gasto;
+                $dataProducto = $this->compraModelo->crear($dataProducto, 'compra_producto');            
+                $dataProducto['gasto'] = $producto['subtotal'] / $dataCompra['total'] * $dataCompra['total_gastos'];
                 $this->costoPromedioPonderado($dataProducto);
-                $this->productoModelo->actualizarStock($dataProducto['producto_id'],$dataProducto['color_id'],$_POST['sucursal_id'], $producto['cantidad']);
+                $this->productoModelo->actualizarStock($dataProducto['producto_id'], $dataProducto['color_id'], $_POST['sucursal_id'], $producto['cantidad']);
             }
         }
+        header('Location: ../controller/compraControlador.php?action=obtenerCompras');
     }
 
-    public function costoPromedioPonderado($dataProducto){
+    public function costoPromedioPonderado($dataProducto)
+    {
         $stock = $this->sucursalModelo->obtenerStock($dataProducto['producto_id']);
         $costo = $this->productoModelo->obtenerCosto($dataProducto['producto_id']);
         $costoInventario = $stock * $costo;
         $costoCompra = $dataProducto['subtotal'] + $dataProducto['gasto'];
         $costoTotal = $costoInventario + $costoCompra;
         $stockTotal = $stock + $dataProducto['cantidad'];
-        $costoUnitarioPromedioPonderado = $costoTotal / $stockTotal;
-        $this->productoModelo->actualizarCosto($dataProducto['producto_id'], $costoUnitarioPromedioPonderado);
+        $costoUnitarioPromedio = $costoTotal / $stockTotal;
+        $this->productoModelo->actualizarCosto($dataProducto['producto_id'], $costoUnitarioPromedio);
+    }
+
+    public function revertirCostoPromedioPonderado($dataProducto)
+    {
+        $stock = $this->sucursalModelo->obtenerStock($dataProducto['producto_id']);
+        $costo = $this->productoModelo->obtenerCosto($dataProducto['producto_id']);
+
+        $costoInventario = $stock * $costo;
+        $costoCompra = $dataProducto['subtotal'] + $dataProducto['gasto'];
+        $costoTotal = $costoInventario - $costoCompra;
+        $stockTotal = $stock - $dataProducto['cantidad'];
+        if ($stockTotal > 0) {
+            $costoUnitarioPromedio = $costoTotal / $stockTotal;
+        } else {        
+            $costoUnitarioPromedio = 0;
+        }
+        $this->productoModelo->actualizarCosto($dataProducto['producto_id'], $costoUnitarioPromedio);
+    }
+
+
+    public function eliminar()
+    {
+        $id = $_GET['id'];
+        $compra = $this->compraModelo->obtenerCompra($id);
+        $productos = $this->compraModelo->obtenerCompraProducto($id);
+        if ($productos) {
+            foreach ($productos as $producto) {
+                $dataProducto = [
+                    'producto_id' => $producto['producto_id'],
+                    'color_id' => $producto['color_id'],
+                    'cantidad' => $producto['cantidad'],
+                    'subtotal' => $producto['subtotal'],
+                    'gasto' => $producto['subtotal'] / $compra['total'] * $compra['total_gastos']
+                ];
+                $this->revertirCostoPromedioPonderado($dataProducto);   
+                $this->productoModelo->actualizarStock($producto['producto_id'], $producto['color_id'], $compra['sucursal_id'], -$producto['cantidad']);                             
+            }            
+        }
+        $this->compraModelo->eliminar($id);
+        header('Location: ../controller/compraControlador.php?action=obtenerCompras');
     }
 }
 

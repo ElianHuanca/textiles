@@ -10,7 +10,7 @@ class CompraModelo
     }
     public function obtenerComprasDatatable($search, $orderColumn, $orderDir, $start, $length)
     {
-        $query = "SELECT *
+        $query = "SELECT c.*,s.sucursal
         FROM compras c
         JOIN sucursales s ON s.id = c.sucursal_id
         WHERE 1 = 1 ";
@@ -55,6 +55,25 @@ class CompraModelo
         return $stmt->fetch(PDO::FETCH_ASSOC)['total'];
     }
 
+    public function obtenerCompraProducto($compra_id){
+        $query = "SELECT cp.*
+        FROM compra_producto cp        
+        WHERE cp.compra_id= :compra_id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':compra_id', $compra_id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function obtenerCompra($id)
+    {
+        $query = "SELECT * FROM compras WHERE id = :id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    
     public function crear($data, $tabla)
     {
         try {
@@ -83,7 +102,19 @@ class CompraModelo
             return $data;
         } catch (PDOException $e) {
             echo "Error: " . $e->getMessage();
-            return false; // Retorna false en caso de error
+            return false;
+        }
+    }
+
+    public function eliminar($id){
+        try {
+            $query = "DELETE FROM compras WHERE id = :id";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            return false;
         }
     }
 }

@@ -72,7 +72,7 @@ class ProductoModelo
     }
 
     public function actualizarStock($producto_id,$color_id,$sucursal_id, $cantidad){
-        $query = "UPDATE inventario SET stock= stock + :cantidad WHERE id= :producto_id AND color_id= :color_id AND sucursal_id= :sucursal_id";
+        $query = "UPDATE inventario SET stock= stock + :cantidad WHERE producto_id= :producto_id AND color_id= :color_id AND sucursal_id= :sucursal_id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':producto_id', $producto_id, PDO::PARAM_INT);
         $stmt->bindParam(':color_id', $color_id, PDO::PARAM_INT);
