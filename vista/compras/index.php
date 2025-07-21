@@ -7,7 +7,7 @@
     <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet">
     <title>Lista De Compras</title>
-    <link rel="stylesheet" href="../view/css/tablestyle.css">
+    <link rel="stylesheet" href="../vista/css/tablestyle.css">
 </head>
 
 <body data-bs-theme="dark" style="color: #FFFFFF;">
@@ -18,18 +18,15 @@
     <?php endif; ?>
 
     <?php
-    include '../view/components/navbar.php';
+    include '../vista/componentes/navbar.php';
     ?>
 
     <div class="d-flex" id="wrapper">
         <div class="w-100 p-4">
-            <?php include '../view/components/header.php'; ?>
+            <?php include '../vista/componentes/header.php'; ?>
             <h4>Lista De Compras</h4>
             <div class="float-end d-flex gap-2 align-items-center">
-                <a href="../controller/compraControlador.php?action=crear" class="btn btn-primary">Registrar Compra</a>
-                <!-- <form method="post" action="../controlador/ticketControlador.php?action=crear">
-                    <button type="submit" class="btn btn-primary">Registrar Ticket</button>
-                </form> -->
+                <a href="../controlador/compraControlador.php?action=crear" class="btn btn-primary">Registrar Compra</a>
             </div>
             <br>
             <br>
@@ -51,7 +48,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     
-    <script src="../view/js/datatableconfig.js"></script>
+    <script src="../vista/js/datatableconfig.js"></script>
     <script>
         $(document).ready(function() {
             const url = "../controller/compraControlador.php?action=compras";

@@ -6,7 +6,7 @@ CREATE TABLE sucursales(
 CREATE TABLE productos(
     id TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     producto VARCHAR(100) NOT NULL,
-    costo DECIMAL(10, 2) NOT NULL DEFAULT 0
+    costo DECIMAL(4, 2) NOT NULL DEFAULT 0
 );
 
 CREATE TABLE colores(
@@ -19,7 +19,7 @@ CREATE TABLE inventario (
     sucursal_id TINYINT UNSIGNED NOT NULL,
     producto_id TINYINT UNSIGNED NOT NULL,
     color_id TINYINT UNSIGNED NOT NULL,
-    stock DECIMAL(10, 2) NOT NULL DEFAULT 0,
+    stock DECIMAL(4, 2) NOT NULL DEFAULT 0,
     PRIMARY KEY (sucursal_id, producto_id, color_id),
     FOREIGN KEY (sucursal_id) REFERENCES sucursales(id),
     FOREIGN KEY (producto_id) REFERENCES productos(id),
@@ -35,8 +35,6 @@ CREATE TABLE ventas(
     sucursal_id TINYINT UNSIGNED NOT NULL,
     FOREIGN KEY (sucursal_id) REFERENCES sucursales(id)
 );
-
-ALTER TABLE ventas ADD COLUMN total_ganancias DECIMAL(10, 2) NOT NULL;
 
 CREATE TABLE venta_producto (    
     venta_id INT UNSIGNED NOT NULL,
@@ -127,15 +125,16 @@ END$$
 
 DELIMITER ;
 
-INSERT INTO sucursales (sucursal) VALUES ('Ramada');
+INSERT INTO sucursales (sucursal) VALUES ('Ramada'),('Feria');
 
 INSERT INTO productos (producto) VALUES 
 ('Razo Suizo SemiLicra'),
 ('Razo Suizo Rigido');
 
 INSERT INTO colores (color, codigo) VALUES 
-('Perla', 'EAE0C8');
-
+('Perla', 'EAE0C8'),
+('Blanco', 'FFFFFF'),
+('Negro', '000000');
 
 INSERT INTO tipos_gastos (tipo_gasto) VALUES 
 ('Transporte Terrestre'),

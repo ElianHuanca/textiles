@@ -50,10 +50,10 @@ class CompraControlador
                 "total_gastos" => $row["total_gastos"] ?? '',
                 "sucursal" => $row["sucursal"] ?? '',
                 "acciones" => '
-                                <a href="../controller/compraControlador.php?action=editar&id=' . $row['id'] . '" style="text-decoration: none;">
+                                <a href="../controlador/compraControlador.php?action=editar&id=' . $row['id'] . '" style="text-decoration: none;">
                                     <img src="../assets/editar.png" width="25px">
                                 </a>
-                                <a href="../controller/compraControlador.php?action=eliminar&id=' . $row['id'] . '" style="text-decoration: none;"                        
+                                <a href="../controlador/compraControlador.php?action=eliminar&id=' . $row['id'] . '" style="text-decoration: none;"                        
                                     onclick="return confirm(\'¿Estás seguro de que deseas eliminar esta compra?\');">
                                     <img src="../assets/borrar.png" width="25px">
                                 </a>'
@@ -116,7 +116,7 @@ class CompraControlador
                 $this->productoModelo->actualizarStock($dataProducto['producto_id'], $dataProducto['color_id'], $_POST['sucursal_id'], $producto['cantidad']);
             }
         }
-        header('Location: ../controller/compraControlador.php?action=obtenerCompras');
+        header('Location: ../controlador/compraControlador.php?action=obtenerCompras');
     }
 
     public function costoPromedioPonderado($dataProducto)
@@ -168,16 +168,16 @@ class CompraControlador
             }            
         }
         $this->compraModelo->eliminar($id);
-        header('Location: ../controller/compraControlador.php?action=obtenerCompras');
+        header('Location: ../controlador/compraControlador.php?action=obtenerCompras');
     }
 }
 
-$controller = new CompraControlador();
+$controlador = new CompraControlador();
 if (isset($_GET['action'])) {
     $action = $_GET['action'];
 
-    if (method_exists($controller, $action)) {
-        $controller->$action();
+    if (method_exists($controlador, $action)) {
+        $controlador->$action();
     } else {
         echo "Método no encontrado";
     }
