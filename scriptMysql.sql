@@ -1,25 +1,37 @@
 CREATE TABLE sucursales(
     id TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    sucursal VARCHAR(100) NOT NULL
+    sucursal VARCHAR(100) 
 );
+
+INSERT INTO sucursales (sucursal) VALUES ('Ramada'),('Feria');
+
+CREATE TABLE categorias(
+    id TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    categoria VARCHAR(100)
+);
+
+INSERT INTO categorias (categoria) VALUES ('Tela'),('Aplique');
 
 CREATE TABLE productos(
     id TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    producto VARCHAR(100) NOT NULL,
-    costo DECIMAL(4, 2) NOT NULL DEFAULT 0
+    producto VARCHAR(100),
+    url VARCHAR(255),
+    costo DECIMAL(6,2)DEFAULT 0,
+    categoria_id TINYINT UNSIGNED,
+    FOREIGN KEY (categoria_id) REFERENCES categorias(id)
 );
 
 CREATE TABLE colores(
     id TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    color VARCHAR(100) NOT NULL,
-    codigo VARCHAR(100) NOT NULL
+    color VARCHAR(100),
+    codigo VARCHAR(100) 
 );
 
 CREATE TABLE inventario (
-    sucursal_id TINYINT UNSIGNED NOT NULL,
-    producto_id TINYINT UNSIGNED NOT NULL,
-    color_id TINYINT UNSIGNED NOT NULL,
-    stock DECIMAL(4, 2) NOT NULL DEFAULT 0,
+    sucursal_id TINYINT UNSIGNED,
+    producto_id TINYINT UNSIGNED,
+    color_id TINYINT UNSIGNED,
+    stock DECIMAL(6,2)DEFAULT 0,
     PRIMARY KEY (sucursal_id, producto_id, color_id),
     FOREIGN KEY (sucursal_id) REFERENCES sucursales(id),
     FOREIGN KEY (producto_id) REFERENCES productos(id),
@@ -28,22 +40,22 @@ CREATE TABLE inventario (
 
 CREATE TABLE ventas(
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,    
-    fecha DATE NOT NULL,
-    total DECIMAL(10, 2) NOT NULL,
-    descuento DECIMAL(10, 2) NOT NULL,
-    total_ganancias DECIMAL(10, 2) NOT NULL,
-    sucursal_id TINYINT UNSIGNED NOT NULL,
+    fecha DATE,
+    total DECIMAL(6,2),
+    descuento DECIMAL(6,2),
+    total_ganancias DECIMAL(6,2),
+    sucursal_id TINYINT UNSIGNED,
     FOREIGN KEY (sucursal_id) REFERENCES sucursales(id)
 );
 
 CREATE TABLE venta_producto (    
-    venta_id INT UNSIGNED NOT NULL,
-    producto_id TINYINT UNSIGNED NOT NULL,
-    color_id TINYINT UNSIGNED NOT NULL,
-    cantidad DECIMAL(10, 2) NOT NULL,
-    precio DECIMAL(10, 2) NOT NULL,
-    subtotal DECIMAL(10, 2) NOT NULL,
-    ganancias DECIMAL(10, 2) NOT NULL,
+    venta_id INT UNSIGNED ,
+    producto_id TINYINT UNSIGNED ,
+    color_id TINYINT UNSIGNED ,
+    cantidad DECIMAL(6,2) ,
+    precio DECIMAL(6,2) ,
+    subtotal DECIMAL(6,2) ,
+    ganancias DECIMAL(6,2) ,
     PRIMARY KEY (venta_id, producto_id, color_id),
     FOREIGN KEY (venta_id) REFERENCES ventas(id) ON DELETE CASCADE,
     FOREIGN KEY (producto_id) REFERENCES productos(id),
@@ -52,20 +64,20 @@ CREATE TABLE venta_producto (
 
 CREATE TABLE compras(
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    sucursal_id TINYINT UNSIGNED NOT NULL,
-    fecha DATE NOT NULL,
-    total DECIMAL(10, 2) NOT NULL,
-    total_gastos DECIMAL(10, 2) NOT NULL,
+    sucursal_id TINYINT UNSIGNED ,
+    fecha DATE ,
+    total DECIMAL(6,2) ,
+    total_gastos DECIMAL(6,2) ,
     FOREIGN KEY (sucursal_id) REFERENCES sucursales(id)
 );
 
 CREATE TABLE compra_producto (
-    compra_id INT UNSIGNED NOT NULL,
-    producto_id TINYINT UNSIGNED NOT NULL,
-    color_id TINYINT UNSIGNED NOT NULL,
-    cantidad DECIMAL(10, 2) NOT NULL,
-    precio DECIMAL(10, 2) NOT NULL,
-    subtotal DECIMAL(10, 2) NOT NULL,    
+    compra_id INT UNSIGNED ,
+    producto_id TINYINT UNSIGNED ,
+    color_id TINYINT UNSIGNED ,
+    cantidad DECIMAL(6,2) ,
+    precio DECIMAL(6,2) ,
+    subtotal DECIMAL(6,2) ,
     PRIMARY KEY (compra_id, producto_id, color_id),
     FOREIGN KEY (compra_id) REFERENCES compras(id) ON DELETE CASCADE,
     FOREIGN KEY (producto_id) REFERENCES productos(id),
@@ -74,20 +86,19 @@ CREATE TABLE compra_producto (
 
 CREATE TABLE tipos_gastos(
     id TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    tipo_gasto VARCHAR(100) NOT NULL
+    tipo_gasto VARCHAR(100) 
 );
 
 CREATE TABLE gastos(
-    tipo_gasto_id TINYINT UNSIGNED NOT NULL,  
-    compra_id INT UNSIGNED NOT NULL,
-    gasto DECIMAL(10, 2) NOT NULL,
+    tipo_gasto_id TINYINT UNSIGNED ,  
+    compra_id INT UNSIGNED ,
+    gasto DECIMAL(6,2) ,
     PRIMARY KEY (tipo_gasto_id, compra_id),
     FOREIGN KEY (compra_id) REFERENCES compras(id) ON DELETE CASCADE,
     FOREIGN KEY (tipo_gasto_id) REFERENCES tipos_gastos(id)
 );
 
-DELIMITER $$
-
+/* DELIMITER $$
 CREATE TRIGGER after_insert_sucursal
 AFTER INSERT ON sucursales
 FOR EACH ROW
@@ -100,7 +111,6 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
-
 CREATE TRIGGER after_insert_producto
 AFTER INSERT ON productos
 FOR EACH ROW
@@ -109,7 +119,6 @@ BEGIN
   SELECT s.id, NEW.id, c.id, 0
   FROM sucursales s, colores c;
 END$$
-
 DELIMITER ;
 
 DELIMITER $$
@@ -123,9 +132,9 @@ BEGIN
   FROM sucursales s, productos p;
 END$$
 
-DELIMITER ;
+DELIMITER ; */
 
-INSERT INTO sucursales (sucursal) VALUES ('Ramada'),('Feria');
+
 
 INSERT INTO productos (producto) VALUES 
 ('Razo Suizo SemiLicra'),

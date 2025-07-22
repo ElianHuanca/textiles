@@ -1,5 +1,4 @@
 <?php
-require_once('../connection/mysqlConnection.php');
 require_once('../model/productoModelo.php');
 
 class ProductoControlador
@@ -7,9 +6,8 @@ class ProductoControlador
     private $productoModelo;
 
     public function __construct()
-    {
-        $db = Conexion::connect();
-        $this->productoModelo = new ProductoModelo($db);
+    {        
+        $this->productoModelo = new ProductoModelo();
     }
 
     public function obtenerProductos()

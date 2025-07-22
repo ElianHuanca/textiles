@@ -7,7 +7,7 @@ class Conexion
     private static $dbUsername = "root";
     private static $dbPassword = "";
 
-    public static function connect()
+    public static function conectar()
     {
         try {
             $pdo = new PDO(
