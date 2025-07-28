@@ -1,18 +1,22 @@
 <?php
-require_once('../model/productoModelo.php');
-
+require_once('../modelo/productoModelo.php');
+require_once('../modelo/categoriaModelo.php');
+                    
+                    
 class ProductoControlador
 {
     private $productoModelo;
+    private $categoriaModelo;
 
     public function __construct()
     {        
         $this->productoModelo = new ProductoModelo();
+        $this->categoriaModelo = new CategoriaModelo();
     }
 
     public function obtenerProductos()
     {
-        include '../view/productos/index.php';
+        include '../vista/productos/index.php';
     }
 
     public function productos()
@@ -24,20 +28,21 @@ class ProductoControlador
         $start = $_POST["start"] ?? 0;
         $length = $_POST["length"] ?? 10;
         $data = [];
-        $columnMap = ["id", "producto", "costo"];
+        $columnMap = ["id", "producto", "costo", "categoria"];
         $orderColumn = $columnMap[$orderColumnIndex] ?? "id";
-        $tickets = $this->productoModelo->obtenerProductosDatatable($search, $orderColumn, $orderDir, $start, $length);
+        $productos = $this->productoModelo->obtenerProductosDatatable($search, $orderColumn, $orderDir, $start, $length);
         $recordsTotal = $this->productoModelo->obtenerCantidadProductos($search);
-        foreach ($tickets as $row) {
+        foreach ($productos as $producto) {
             $data[] = [
-                "id" => $row["id"],
-                "producto" => $row["producto"] ?? '',
-                "costo" => $row["costo"] ?? '',
+                "id" => $producto["id"],
+                "producto" => $producto["producto"] ?? '',
+                "costo" => $producto["costo"] ?? '',
+                "categoria" => $producto["categoria"] ?? '',
                 "acciones" => '
-                                <a href="../controller/productoControlador.php?action=editar&id=' . $row['id'] . '" style="text-decoration: none;">
+                                <a href="../controlador/productoControlador.php?action=editar&id=' . $producto['id'] . '" style="text-decoration: none;">
                                     <img src="../assets/editar.png" width="25px">
                                 </a>
-                                <a href="../controller/productoControlador.php?action=eliminar&id=' . $row['id'] . '" style="text-decoration: none;"                        
+                                <a href="../controlador/productoControlador.php?action=eliminar&id=' . $producto['id'] . '" style="text-decoration: none;"                        
                                     onclick="return confirm(\'¿Estás seguro de que deseas eliminar este producto?\');">
                                     <img src="../assets/borrar.png" width="25px">
                                 </a>'
@@ -52,6 +57,29 @@ class ProductoControlador
         ];
 
         echo json_encode($salida);
+    }
+
+    public function crear()
+    {
+        $categorias = $this->categoriaModelo->obtenerCategorias();
+        include '../vista/productos/crear.php';
+    }
+
+    public function crearProducto()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = [
+                'producto' => $_POST['producto'],
+                'categoria_id' => $_POST['categoria_id'],
+                'costo' => 0
+            ];
+            $resultado = $this->productoModelo->crearProducto($data);
+            if ($resultado) {
+                header('Location: ../controlador/productoControlador.php?action=obtenerProductos&success=1');
+            } else {
+                header('Location: ../controlador/productoControlador.php?action=obtenerProductos&error=1');
+            }
+        }
     }
 }
 

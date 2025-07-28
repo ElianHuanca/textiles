@@ -18,6 +18,7 @@ CREATE TABLE productos(
     url VARCHAR(255),
     costo DECIMAL(6,2)DEFAULT 0,
     categoria_id TINYINT UNSIGNED,
+    activo BOOLEAN DEFAULT 1,
     FOREIGN KEY (categoria_id) REFERENCES categorias(id)
 );
 

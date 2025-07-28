@@ -16,7 +16,7 @@ class CompraControlador
 
     public function __construct()
     {
-        $db = Conexion::connect();
+        $db = Conexion::conectar();
         $this->compraModelo = new CompraModelo($db);
         $this->sucursalModelo = new SucursalModelo($db);
         $this->productoModelo = new ProductoModelo($db);

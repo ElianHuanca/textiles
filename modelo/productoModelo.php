@@ -1,17 +1,19 @@
 <?php
 require_once('../conexion/conexion.php');
+require_once('metodosModelo.php');
 
 class ProductoModelo
 {
     private $db;
-
+    private $metodosModelo;
     public function __construct()
     {
         $this->db = Conexion::conectar();
+        $this->metodosModelo = new MetodosModelo($this->db);
     }
 
     public function obtenerProductos(){
-        $query = "SELECT * FROM productos";
+        $query = "SELECT * FROM productos WHERE activo = 1";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -19,7 +21,7 @@ class ProductoModelo
 
     public function obtenerProducto($id)
     {
-        $query = "SELECT * FROM productos WHERE id = :id";
+        $query = "SELECT * FROM productos WHERE id = :id AND activo = 1";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -28,7 +30,9 @@ class ProductoModelo
 
     public function obtenerProductosDatatable($search, $orderColumn, $orderDir, $start, $length)
     {
-        $query = "SELECT * FROM productos p JOIN categorias c ON p.categoria_id = c.id WHERE 1 = 1";
+        $query = "SELECT p.*, c.categoria FROM productos p 
+        JOIN categorias c ON p.categoria_id = c.id 
+        WHERE p.activo = 1";
         if (!empty($search)) {
             $query .= " AND ( p.costo LIKE :search
             OR p.producto LIKE :search 
@@ -51,7 +55,7 @@ class ProductoModelo
     {
         $query = "SELECT COUNT(*) total 
         FROM productos p JOIN categorias c ON p.categoria_id = c.id
-        WHERE 1 = 1";
+        WHERE p.activo = 1";
         if (!empty($search)) {
             $query .= " AND ( p.costo LIKE :search
             OR p.producto LIKE :search 
@@ -67,15 +71,20 @@ class ProductoModelo
         return $stmt->fetch(PDO::FETCH_ASSOC)['total'];
     }
 
-    public function agregarProducto($producto, $url, $costo, $categoria_id)
+    public function crearProducto($data, $tabla = 'productos')
     {
-        $query = "INSERT INTO productos (producto, url, costo, categoria_id) VALUES (:producto, :url, :costo, :categoria_id)";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':producto', $producto);
-        $stmt->bindParam(':url', $url);
-        $stmt->bindParam(':costo', $costo);
-        $stmt->bindParam(':categoria_id', $categoria_id, PDO::PARAM_INT);
-        return $stmt->execute();
+        return $this->metodosModelo->crear($data, $tabla);
+    }
+
+    public function editarProducto($id, $data, $tabla = 'productos')
+    {
+        return $this->metodosModelo->editar($id, $data, $tabla);
+    }    
+
+    public function eliminarProducto($id)
+    {
+        $data = ['activo' => 0];
+        return $this->metodosModelo->editar($id, $data, 'productos');        
     }
 
     public function obtenerCosto($producto_id){

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet">
-    <title>Lista De Productos</title>
+    <title>Lista De Colores</title>
     <link rel="stylesheet" href="../vista/css/tablestyle.css">
 </head>
 
@@ -28,9 +28,9 @@
     <div class="d-flex" id="wrapper">
         <div class="w-100 p-4">
             <?php include '../vista/componentes/header.php'; ?>
-            <h4>Lista De Productos</h4>
+            <h4>Lista De Colores</h4>
             <div class="float-end d-flex gap-2 align-items-center">
-                <a href="../controlador/productoControlador.php?action=crear" class="btn btn-primary">Registrar Producto</a>
+                <a href="../controlador/colorControlador.php?action=crear" class="btn btn-primary">Registrar Color</a>
             </div>
             <br>
             <br>
@@ -38,9 +38,8 @@
                 <thead class="thead-light">
                     <tr>
                         <th>id</th>
-                        <th>Producto</th>
-                        <th>Costo Promedio Ponderado</th>
-                        <th>Categoria</th>
+                        <th>Color</th>
+                        <th>Código</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -54,18 +53,15 @@
     <script src="../vista/js/datatableconfig.js"></script>
     <script>
         $(document).ready(function() {
-            const urlProductos = "../controlador/productoControlador.php?action=productos";
-            const columnsProductos = [{
+            const urlColores = "../controlador/colorControlador.php?action=colors";
+            const columnsColores = [{
                     data: "id"
                 },
                 {
-                    data: "producto"
+                    data: "color"
                 },
                 {
-                    data: "costo"
-                },
-                {
-                    data: "categoria"
+                    data: "codigo"
                 },
                 {
                     data: "acciones",
@@ -73,7 +69,7 @@
                     searchable: false
                 }
             ];
-            $('#miTabla').DataTable(getBaseDataTableConfig(urlProductos, columnsProductos));
+            $('#miTabla').DataTable(getBaseDataTableConfig(urlColores, columnsColores));
         });
     </script>
 </body>

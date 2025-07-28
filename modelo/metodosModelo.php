@@ -1,12 +1,14 @@
 <?php
+require_once('../conexion/conexion.php');
+
 class MetodosModelo
 {
     private $db;
-    public function __construct($db)
+    public function __construct()
     {
-        $this->db = $db;
+        $this->db = Conexion::conectar();
     }
-    
+
     public function crear($data, $tabla)
     {
         try {
@@ -36,6 +38,29 @@ class MetodosModelo
         } catch (PDOException $e) {
             echo "Error: " . $e->getMessage();
             return false;
+        }
+    }
+
+    public function editar($id, $data, $tabla)
+    {
+        try {
+            $set = '';
+            foreach ($data as $key => $value) {
+                $set .= "$key=:$key ,";
+            }
+            $set = rtrim($set, ',');
+            $query = "UPDATE $tabla SET $set WHERE id=:id";
+
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':id', $id);
+            foreach ($data as $key => &$value) {
+                $stmt->bindParam(":$key", $value);
+            }
+            $stmt->execute();
+            $data['id'] = $id;
+            return $data;
+        } catch (PDOException $e) {
+            echo $e->getMessage();
         }
     }
 }
