@@ -7,11 +7,12 @@ class ProductoControlador
 {
     private $productoModelo;
     private $categoriaModelo;
-
+    private $colorModelo;
     public function __construct()
     {        
         $this->productoModelo = new ProductoModelo();
         $this->categoriaModelo = new CategoriaModelo();
+        $this->colorModelo = new ColorModelo();
     }
 
     public function obtenerProductos()
@@ -39,13 +40,22 @@ class ProductoControlador
                 "costo" => $producto["costo"] ?? '',
                 "categoria" => $producto["categoria"] ?? '',
                 "acciones" => '
-                                <a href="../controlador/productoControlador.php?action=editar&id=' . $producto['id'] . '" style="text-decoration: none;">
-                                    <img src="../assets/editar.png" width="25px">
+                                <a href="../controlador/productoControlador.php?action=agregar&id=' . $producto['id'] . '"
+                                    <button class="btn btn-primary">
+                                        <i class="bi bi-plus" title="Agregar color"></i>
+                                    </button>
                                 </a>
-                                <a href="../controlador/productoControlador.php?action=eliminar&id=' . $producto['id'] . '" style="text-decoration: none;"                        
+                                <a href="../controlador/productoControlador.php?action=editar&id=' . $producto['id'] . '"
+                                    <button class="btn btn-secondary">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                </a>
+                                <a href="../controlador/productoControlador.php?action=eliminar&id=' . $producto['id'] . '"
                                     onclick="return confirm(\'¿Estás seguro de que deseas eliminar este producto?\');">
-                                    <img src="../assets/borrar.png" width="25px">
-                                </a>'
+                                    <button class="btn btn-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </a>'                
             ];
         }
 
@@ -79,6 +89,19 @@ class ProductoControlador
             } else {
                 header('Location: ../controlador/productoControlador.php?action=obtenerProductos&error=1');
             }
+        }
+    }
+
+    public function agregar()
+    {
+        $productoId = $_GET['id'] ?? null;
+        if ($productoId) {
+            $producto = $this->productoModelo->obtenerProducto($productoId);
+            $colores = $this->colorModelo->obtenerColoresDisponibles($productoId);
+            $coloresRegistrados = $this->colorModelo->obtenerColoresRegistrados($productoId);
+            include '../vista/productos/agregar.php';
+        } else {
+            header('Location: ../controlador/productoControlador.php?action=obtenerProductos');
         }
     }
 }

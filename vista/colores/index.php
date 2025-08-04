@@ -53,7 +53,7 @@
     <script src="../vista/js/datatableconfig.js"></script>
     <script>
         $(document).ready(function() {
-            const urlColores = "../controlador/colorControlador.php?action=colors";
+            const urlColores = "../controlador/colorControlador.php?action=colores";
             const columnsColores = [{
                     data: "id"
                 },

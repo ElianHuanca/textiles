@@ -68,4 +68,27 @@ class ColorModelo
     {
         return $this->metodosModelo->crear($data, $tabla);
     }
+
+    public function obtenerColoresDisponibles($productoId)
+    {
+        $query = "SELECT * FROM colores 
+        WHERE id NOT IN (SELECT color_id 
+        FROM inventario 
+        WHERE producto_id = :productoId)";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':productoId', $productoId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function obtenerColoresRegistrados($productoId)
+    {
+        $query = "SELECT c.id, c.color, c.codigo FROM colores c
+                  JOIN inventario pc ON c.id = pc.color_id
+                  WHERE pc.producto_id = :productoId";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':productoId', $productoId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
