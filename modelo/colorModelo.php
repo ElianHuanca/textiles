@@ -31,12 +31,6 @@ class ColorModelo
         $query .= " ORDER BY $orderColumn $orderDir LIMIT :start, :length";
         $stmt = $this->db->prepare($query);
         if (!empty($search)) {
-            $query .= " AND ( color LIKE :search
-            OR codigo LIKE :search)";
-        }
-        $query .= " ORDER BY $orderColumn $orderDir LIMIT :start, :length";
-        $stmt = $this->db->prepare($query);
-        if (!empty($search)) {
             $searchParam = "%$search%";
             $stmt->bindParam(':search', $searchParam, PDO::PARAM_STR);
         }

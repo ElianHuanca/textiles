@@ -6,19 +6,22 @@
     <div class="offcanvas-body">
         <ul class="nav flex-column">
             <li class="nav-item">
-                <a class="nav-link text-white" href="../controller/dashboardControlador.php?action=obtenerDashboard">Dashboard</a>
+                <a class="nav-link link-light" href="../controlador/dashboardControlador.php?action=obtenerDashboard">Dashboard</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white" href="../controller/productoControlador.php?action=obtenerProductos">Productos</a>
+                <a class="nav-link link-light" href="../controlador/productoControlador.php?action=obtenerProductos">Productos</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white" href="../controller/ventaControlador.php?action=obtenerVentas">Ventas</a>
+                <a class="nav-link link-light" href="../controlador/ventaControlador.php?action=obtenerVentas">Ventas</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white" href="../controller/compraControlador.php?action=obtenerCompras">Compras</a>
+                <a class="nav-link link-light" href="../controlador/compraControlador.php?action=obtenerCompras">Compras</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white" href="../controller/sucursalControlador.php?action=obtenerSucursales">Sucursales</a>
+                <a class="nav-link link-light" href="../controlador/coloresControlador.php?action=obtenerColores">Colores</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link link-light" href="../controlador/sucursalControlador.php?action=obtenerSucursales">Sucursales</a>
             </li>
         </ul>
     </div>

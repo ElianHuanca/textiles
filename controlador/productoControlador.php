@@ -1,7 +1,7 @@
 <?php
 require_once('../modelo/productoModelo.php');
 require_once('../modelo/categoriaModelo.php');
-                    
+require_once('../modelo/colorModelo.php');
                     
 class ProductoControlador
 {
