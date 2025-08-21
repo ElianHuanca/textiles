@@ -1,12 +1,14 @@
 <?php
 
+require_once('../conexion/conexion.php');
+
 class VentaModelo
 {
     private $db;
 
-    public function __construct($db)
+    public function __construct()
     {
-        $this->db = $db;
+        $this->db = Conexion::conectar();
     }
 
     public function obtenerVentasDatatable($search, $orderColumn, $orderDir, $start, $length)

@@ -112,4 +112,8 @@ class ProductoModelo
         $stmt->bindValue(':cantidad', $cantidad);
         return $stmt->execute();
     }
+
+    public function agregarColor($data, $tabla = 'inventario'){
+        return $this->metodosModelo->crear($data, $tabla);
+    }
 }

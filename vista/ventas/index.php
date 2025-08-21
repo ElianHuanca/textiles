@@ -18,15 +18,15 @@
     <?php endif; ?>
 
     <?php
-    include '../view/components/navbar.php';
+    include '../vista/componentes/navbar.php';
     ?>
 
     <div class="d-flex" id="wrapper">
         <div class="w-100 p-4">
-            <?php include '../view/components/header.php'; ?>
+            <?php include '../vista/componentes/header.php'; ?>
             <h4>Lista De Ventas</h4>
             <div class="float-end d-flex gap-2 align-items-center">
-                <a href="../controller/ventaControlador.php?action=crear" class="btn btn-primary">Registrar Venta</a>
+                <a href="../controlador/ventaControlador.php?action=crear" class="btn btn-primary">Registrar Venta</a>
             </div>
             <br>
             <br>

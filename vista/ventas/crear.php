@@ -5,24 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <title>Registrar Compra</title>
+    <title>Registrar Venta</title>
 </head>
 
 <body data-bs-theme="dark" style="color: #FFFFFF;">
-    <?php include '../view/components/navbar.php'; ?>
+    <?php include '../vista/componentes/navbar.php'; ?>
     <div class="d-flex" id="wrapper">
         <div class="w-100 p-4 text-center">
-            <?php include '../view/components/header.php'; ?>
-            <h4>Registrar Compra</h4>
-            <form action="../controller/compraControlador.php?action=crearCompra" method="POST" id="formCompra">
+            <?php include '../vista/componentes/header.php'; ?>
+            <h4>Registrar Venta</h4>
+            <form action="../controlador/ventaControlador.php?action=crearVenta" method="POST" id="formVenta">
                 <div class="row">
                     <div class="col-md-3 mb-3">
-                        <label for="fecha" class="form-label">Fecha</label>
-                        <input type="date" class="form-control" id="fecha" name="fecha" value="<?php echo date('Y-m-d'); ?>" required>
-                    </div>
-                    <div class="col-md-3 mb-3">
                         <label for="sucursal" class="form-label">Sucursal</label>
-                        <!-- <input type="text" class="form-control" id="sucursal" name="sucursal" required> -->
                         <select class="form-select" name="sucursal_id" id="sucursal_id">
                             <?php foreach ($sucursales as $sucursal): ?>
                                 <option value="<?php echo $sucursal['id']; ?>"><?php echo $sucursal['sucursal']; ?></option>
@@ -30,15 +25,19 @@
                         </select>
                     </div>
                     <div class="col-md-3 mb-3">
-                        <label for="total" class="form-label">Total Compras</label>
+                        <label for="total" class="form-label">Total Venta</label>
                         <input type="number" class="form-control" id="total" name="total" value="0" readonly>
                     </div>
                     <div class="col-md-3 mb-3">
-                        <label for="total_gastos" class="form-label">Total Gastos</label>
-                        <input type="number" class="form-control" id="total_gastos" name="total_gastos" value="0" readonly>
+                        <label for="total_ganancias" class="form-label">Total Ganancias</label>
+                        <input type="number" class="form-control" id="total_ganancias" name="total_ganancias" value="0" readonly>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="descuento" class="form-label">Descuento</label>
+                        <input type="number" class="form-control" id="descuento" name="descuento" value="0">
                     </div>
                 </div>
-                <h5>Detalle Compras</h5>
+                <h5>Detalle Ventas</h5>
                 <div class="row">
                     <div class="col-md-3 mb-3">
                         <label for="producto" class="form-label">Producto</label>
@@ -50,10 +49,7 @@
                     </div>
                     <div class="col-md-3 mb-3">
                         <label for="color" class="form-label">Color</label>
-                        <select class="form-select" name="color_id" id="color_id">
-                            <?php foreach ($colores as $color): ?>
-                                <option value="<?php echo $color['id']; ?>"><?php echo $color['color']; ?></option>
-                            <?php endforeach; ?>
+                        <select class="form-select" name="color_id" id="color_id" disabled>
                         </select>
                     </div>
                     <div class="col-md-3 mb-3">
@@ -81,76 +77,13 @@
                     <tbody>
                     </tbody>
                 </table>
-                <h5>Detalle Gastos</h5>
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="" class="form-label">Tipo Gasto</label>
-                        <select name="tipo_gasto_id" id="tipo_gasto_id" class="form-select">
-                            <?php foreach ($tipos_gastos as $tipo_gasto): ?>
-                                <option value="<?php echo $tipo_gasto['id']; ?>"><?php echo $tipo_gasto['tipo_gasto']; ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="gasto" class="form-label">Gasto</label>
-                        <input type="text" class="form-control" id="gasto" name="gasto">
-                    </div>
-                </div>
-                <button type="button" class="btn btn-secondary" onclick="agregarGasto();">Agregar Gasto</button>
-                <input type="text" class="form-control" id="gastos" name="gastos" hidden>
-                <table class="table table-striped w-100" id="tablaGastos">
-                    <thead>
-                        <tr>
-                            <th>Tipo Gasto</th>
-                            <th>Gasto</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
                 <button type="submit" class="btn btn-primary">Registrar</button>
             </form>
         </div>
     </div>
     <script src="../bootstrap/js/bootstrap.bundle.min.js"></script>
     <script>
-        const gastos = [];
         const productos = [];
-
-        function agregarGasto() {
-            const tipoGastoId = document.getElementById('tipo_gasto_id').value;
-            const gasto = document.getElementById('gasto').value;
-            const tipoGastoText = document.querySelector(`#tipo_gasto_id option[value="${tipoGastoId}"]`).textContent;
-            const totalGastos = document.getElementById('total_gastos');
-            const nuevoGasto = {
-                tipo_gasto_id: tipoGastoId,
-                tipo_gasto: tipoGastoText,
-                gasto: gasto
-            };
-            gastos.push(nuevoGasto);
-            totalGastos.value = parseFloat(totalGastos.value) + parseFloat(gasto);
-            actualizarTablaGastos();
-        }
-
-        function actualizarTablaGastos() {
-            const tablaGastos = document.getElementById('tablaGastos').getElementsByTagName('tbody')[0];
-            tablaGastos.innerHTML = '';
-            gastos.forEach((gasto, index) => {
-                const fila = tablaGastos.insertRow();
-                fila.insertCell(0).textContent = gasto.tipo_gasto;
-                fila.insertCell(1).textContent = gasto.gasto;
-                const celdaAcciones = fila.insertCell(2);
-                celdaAcciones.innerHTML = `<button class="btn btn-danger" onclick="eliminarGasto(${index})">Eliminar</button>`;
-            });
-        }
-
-        function eliminarGasto(index) {
-            const totalGastos = document.getElementById('total_gastos');
-            totalGastos.value = parseFloat(totalGastos.value) - parseFloat(gastos[index].gasto);
-            gastos.splice(index, 1);
-            actualizarTablaGastos();
-        }
 
         function agregarProducto() {
             const productoId = document.getElementById('producto_id').value;
@@ -198,7 +131,7 @@
 
         }
 
-        document.getElementById('formCompra').addEventListener('submit', function (event) {
+        document.getElementById('formCompra').addEventListener('submit', function(event) {
             event.preventDefault();
             const productosInput = document.getElementById('productos');
             const gastosInput = document.getElementById('gastos');
@@ -206,6 +139,30 @@
             gastosInput.value = JSON.stringify(gastos);
             this.submit();
         });
+
+        document.getElementById('producto_id').addEventListener('change', function() {
+            const productoId = this.value;
+            const colorSelect = document.getElementById('color_id');
+            colorSelect.innerHTML = '';
+            obtenerColoresPorProducto(productoId);
+            colorSelect.disabled = false;
+        });
+
+        function obtenerColoresPorProducto(productoId) {
+            fetch(`../controlador/ventaContolador.php?producto_id=${productoId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const colorSelect = document.getElementById('color_id');
+                    colorSelect.innerHTML = '';
+                    data.forEach(color => {
+                        const option = document.createElement('option');
+                        option.value = color.id;
+                        option.textContent = color.color;
+                        colorSelect.appendChild(option);
+                    });
+                    colorSelect.disabled = false;
+                });
+        }
     </script>
 </body>
 

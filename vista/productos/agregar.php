@@ -22,7 +22,7 @@
                     <select name="color_id" id="color_id" class="form-select" required>
                         <option value="">Seleccione un color</option>
                         <?php
-                        foreach ($colores as $color) {
+                        foreach ($coloresDisponibles as $color) {
                             echo "<option value='{$color['id']}'>{$color['color']}</option>";
                         }
                         ?>

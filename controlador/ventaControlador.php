@@ -1,10 +1,9 @@
 <?php
-require_once('../connection/mysqlConnection.php');
-require_once('../model/ventaModelo.php');
-require_once('../model/sucursalModelo.php');
-require_once('../model/productoModelo.php');
-require_once('../model/colorModelo.php');
-require_once('../model/tipogastoModelo.php');
+require_once('../modelo/ventaModelo.php');
+require_once('../modelo/sucursalModelo.php');
+require_once('../modelo/productoModelo.php');
+require_once('../modelo/colorModelo.php');
+require_once('../modelo/tipogastoModelo.php');
 
 class VentaControlador
 {
@@ -16,17 +15,16 @@ class VentaControlador
 
     public function __construct()
     {
-        $db = Conexion::connect();
-        $this->ventaModelo = new VentaModelo($db);
-        $this->sucursalModelo = new SucursalModelo($db);
-        $this->productoModelo = new ProductoModelo($db);
-        $this->colorModelo = new ColorModelo($db);
-        $this->tipoGastoModelo = new TipoGastoModelo($db);
+        $this->ventaModelo = new VentaModelo();
+        $this->sucursalModelo = new SucursalModelo();
+        $this->productoModelo = new ProductoModelo();
+        $this->colorModelo = new ColorModelo();
+        $this->tipoGastoModelo = new TipoGastoModelo();
     }
 
     public function obtenerVentas()
     {
-        include '../view/ventas/index.php';
+        include '../vista/ventas/index.php';
     }
 
     public function ventas()
@@ -69,6 +67,21 @@ class VentaControlador
         ];
 
         echo json_encode($salida);
+    }
+
+    public function crear(){
+        $sucursales = $this->sucursalModelo->obtenerSucursales();
+        $productos = $this->productoModelo->obtenerProductos();        
+        include '../vista/ventas/crear.php';
+    }
+
+    public function obtenerColoresRegistrados()
+    {
+        header('Content-Type: application/json');
+        $input = json_decode(file_get_contents('php://input'), true);
+        $producto_id = $input['producto_id'] ?? null;
+        $colores = $this->colorModelo->obtenerColoresRegistrados($producto_id);
+        echo json_encode($colores);
     }
 }
 

@@ -1,12 +1,14 @@
 <?php
 
+require_once('../conexion/conexion.php');
+
 class SucursalModelo
 {
     private $db;
 
-    public function __construct($db)
+    public function __construct()
     {
-        $this->db = $db;
+        $this->db = Conexion::conectar();
     }
     public function obtenerSucursales()
     {

@@ -77,9 +77,10 @@ class ColorModelo
 
     public function obtenerColoresRegistrados($productoId)
     {
-        $query = "SELECT c.id, c.color, c.codigo FROM colores c
-                  JOIN inventario pc ON c.id = pc.color_id
-                  WHERE pc.producto_id = :productoId";
+        $query = "SELECT c.* FROM colores c
+                  JOIN inventario i ON c.id = i.color_id
+                  WHERE i.producto_id = :productoId
+                  GROUP BY c.id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':productoId', $productoId, PDO::PARAM_INT);
         $stmt->execute();

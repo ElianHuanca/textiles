@@ -18,7 +18,7 @@
                 <a class="nav-link link-light" href="../controlador/compraControlador.php?action=obtenerCompras">Compras</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link link-light" href="../controlador/coloresControlador.php?action=obtenerColores">Colores</a>
+                <a class="nav-link link-light" href="../controlador/colorControlador.php?action=obtenerColores">Colores</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link link-light" href="../controlador/sucursalControlador.php?action=obtenerSucursales">Sucursales</a>

@@ -2,17 +2,21 @@
 require_once('../modelo/productoModelo.php');
 require_once('../modelo/categoriaModelo.php');
 require_once('../modelo/colorModelo.php');
-                    
+require_once('../modelo/sucursalModelo.php');
+
 class ProductoControlador
 {
     private $productoModelo;
     private $categoriaModelo;
     private $colorModelo;
+    private $sucursalModelo;
+
     public function __construct()
-    {        
+    {
         $this->productoModelo = new ProductoModelo();
         $this->categoriaModelo = new CategoriaModelo();
         $this->colorModelo = new ColorModelo();
+        $this->sucursalModelo = new SucursalModelo();
     }
 
     public function obtenerProductos()
@@ -55,7 +59,7 @@ class ProductoControlador
                                     <button class="btn btn-danger">
                                         <i class="bi bi-trash"></i>
                                     </button>
-                                </a>'                
+                                </a>'
             ];
         }
 
@@ -97,11 +101,23 @@ class ProductoControlador
         $productoId = $_GET['id'] ?? null;
         if ($productoId) {
             $producto = $this->productoModelo->obtenerProducto($productoId);
-            $colores = $this->colorModelo->obtenerColoresDisponibles($productoId);
+            $coloresDisponibles = $this->colorModelo->obtenerColoresDisponibles($productoId);
             $coloresRegistrados = $this->colorModelo->obtenerColoresRegistrados($productoId);
             include '../vista/productos/agregar.php';
         } else {
             header('Location: ../controlador/productoControlador.php?action=obtenerProductos');
+        }
+    }
+    public function agregarColor()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $productoId = $_GET['producto_id'] ?? null;
+            $colorId = $_POST['color_id'] ?? null;
+            $sucursales = $this->sucursalModelo->obtenerSucursales();
+            foreach ($sucursales as $sucursal) {
+                $this->productoModelo->agregarColor(['producto_id' => $productoId, 'color_id' => $colorId, 'sucursal_id' => $sucursal['id']]);
+            }
+            header('Location: ../controlador/productoControlador.php?action=agregar&id=' . $productoId . '&success=1');
         }
     }
 }
