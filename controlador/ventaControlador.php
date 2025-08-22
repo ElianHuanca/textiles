@@ -36,7 +36,7 @@ class VentaControlador
         $start = $_POST["start"] ?? 0;
         $length = $_POST["length"] ?? 10;
         $data = [];
-        $columnMap = ["id", "fecha", "total", "descuento","total_ganancias", "sucursal"];
+        $columnMap = ["id", "fecha", "total", "descuento", "total_ganancias", "sucursal"];
         $orderColumn = $columnMap[$orderColumnIndex] ?? "id";
         $tickets = $this->ventaModelo->obtenerVentasDatatable($search, $orderColumn, $orderDir, $start, $length);
         $recordsTotal = $this->ventaModelo->obtenerCantidadVentas($search);
@@ -69,9 +69,10 @@ class VentaControlador
         echo json_encode($salida);
     }
 
-    public function crear(){
+    public function crear()
+    {
         $sucursales = $this->sucursalModelo->obtenerSucursales();
-        $productos = $this->productoModelo->obtenerProductos();        
+        $productos = $this->productoModelo->obtenerProductos();
         include '../vista/ventas/crear.php';
     }
 
@@ -79,7 +80,7 @@ class VentaControlador
     {
         header('Content-Type: application/json');
         $input = json_decode(file_get_contents('php://input'), true);
-        $producto_id = $input['producto_id'] ?? null;
+        $producto_id = isset($_GET['producto_id']) ? intval($_GET['producto_id']) : null;
         $colores = $this->colorModelo->obtenerColoresRegistrados($producto_id);
         echo json_encode($colores);
     }

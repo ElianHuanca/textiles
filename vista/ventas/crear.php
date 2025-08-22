@@ -53,6 +53,10 @@
                         </select>
                     </div>
                     <div class="col-md-3 mb-3">
+                        <label for="stock" class="form-label">Stock</label>
+                        <input type="number" class="form-control" id="stock" name="stock" value="0" disabled>
+                    </div>
+                    <div class="col-md-3 mb-3">
                         <label for="cantidad" class="form-label">Cantidad</label>
                         <input type="number" class="form-control" id="cantidad" name="cantidad">
                     </div>
@@ -131,38 +135,41 @@
 
         }
 
-        document.getElementById('formCompra').addEventListener('submit', function(event) {
+        document.getElementById('formVenta').addEventListener('submit', function(event) {
             event.preventDefault();
-            const productosInput = document.getElementById('productos');
-            const gastosInput = document.getElementById('gastos');
-            productosInput.value = JSON.stringify(productos);
-            gastosInput.value = JSON.stringify(gastos);
+            const productosInput = document.getElementById('productos');            
+            productosInput.value = JSON.stringify(productos);            
             this.submit();
         });
 
         document.getElementById('producto_id').addEventListener('change', function() {
             const productoId = this.value;
-            const colorSelect = document.getElementById('color_id');
-            colorSelect.innerHTML = '';
-            obtenerColoresPorProducto(productoId);
-            colorSelect.disabled = false;
+            //const sucursalId = document.getElementById('sucursal_id').value;
+            obtenerColoresPorProducto(productoId, sucursalId);
         });
 
         function obtenerColoresPorProducto(productoId) {
-            fetch(`../controlador/ventaContolador.php?producto_id=${productoId}`)
+            fetch(`../controlador/ventaControlador.php?action=obtenerColoresRegistrados&producto_id=${productoId}`)
                 .then(response => response.json())
                 .then(data => {
                     const colorSelect = document.getElementById('color_id');
-                    colorSelect.innerHTML = '';
-                    data.forEach(color => {
-                        const option = document.createElement('option');
-                        option.value = color.id;
-                        option.textContent = color.color;
-                        colorSelect.appendChild(option);
-                    });
-                    colorSelect.disabled = false;
+                    if (data.length > 0) {
+                        colorSelect.innerHTML = '';
+                        data.forEach(color => {
+                            const option = document.createElement('option');
+                            option.value = color.id;
+                            option.textContent = color.color;
+                            colorSelect.appendChild(option);
+                        });
+                        colorSelect.disabled = false;
+                    } else {
+                        colorSelect.innerHTML = '<option value="">No hay colores disponibles</option>';
+                        colorSelect.disabled = true;
+                    }
                 });
         }
+        const producto_id = document.getElementById('producto_id').value;
+        obtenerColoresPorProducto(producto_id);        
     </script>
 </body>
 
