@@ -89,7 +89,7 @@
     <script>
         const productos = [];
 
-        function agregarProducto() {
+        /* function agregarProducto() {
             const productoId = document.getElementById('producto_id').value;
             const colorId = document.getElementById('color_id').value;
             const cantidad = document.getElementById('cantidad').value;
@@ -137,15 +137,14 @@
 
         document.getElementById('formVenta').addEventListener('submit', function(event) {
             event.preventDefault();
-            const productosInput = document.getElementById('productos');            
-            productosInput.value = JSON.stringify(productos);            
+            const productosInput = document.getElementById('productos');
+            productosInput.value = JSON.stringify(productos);
             this.submit();
-        });
+        }); */
 
         document.getElementById('producto_id').addEventListener('change', function() {
             const productoId = this.value;
-            //const sucursalId = document.getElementById('sucursal_id').value;
-            obtenerColoresPorProducto(productoId, sucursalId);
+            obtenerColoresPorProducto(productoId);
         });
 
         function obtenerColoresPorProducto(productoId) {
@@ -166,10 +165,45 @@
                         colorSelect.innerHTML = '<option value="">No hay colores disponibles</option>';
                         colorSelect.disabled = true;
                     }
+                    const color_id = document.getElementById('color_id').value;
+                    const sucursal_id = document.getElementById('sucursal_id').value;
+                    obtenerStock(sucursal_id, productoId, color_id);
                 });
         }
+
+        document.getElementById('color_id').addEventListener('change', function() {
+            const sucursalId = document.getElementById('sucursal_id').value;
+            const productoId = document.getElementById('producto_id').value;
+            const colorId = this.value;
+            obtenerStock(sucursalId, productoId, colorId);
+        });
+
+        function obtenerStock(sucursal_id, producto_id, color_id) {
+            fetch(`../controlador/ventaControlador.php?action=obtenerStock`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        sucursal_id: sucursal_id,
+                        producto_id: producto_id,
+                        color_id: color_id
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const stockInput = document.getElementById('stock');
+                    stockInput.value = data.stock ? data.stock : 0;
+                    console.log('Sucursal ID:', sucursal_id);
+                    console.log('Producto ID:', producto_id);
+                    console.log('Color ID:', color_id);
+                    console.log('Stock:', data.stock);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
         const producto_id = document.getElementById('producto_id').value;
-        obtenerColoresPorProducto(producto_id);        
+        obtenerColoresPorProducto(producto_id);
     </script>
 </body>
 

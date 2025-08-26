@@ -116,4 +116,15 @@ class ProductoModelo
     public function agregarColor($data, $tabla = 'inventario'){
         return $this->metodosModelo->crear($data, $tabla);
     }
+
+    public function obtenerStock($sucursal_id, $producto_id, $color_id)
+    {
+        $query = "SELECT stock FROM inventario WHERE sucursal_id = :sucursal_id AND producto_id = :producto_id AND color_id = :color_id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':sucursal_id', $sucursal_id, PDO::PARAM_INT);
+        $stmt->bindParam(':producto_id', $producto_id, PDO::PARAM_INT);
+        $stmt->bindParam(':color_id', $color_id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC)['stock'];
+    }
 }

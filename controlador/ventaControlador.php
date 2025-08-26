@@ -78,11 +78,22 @@ class VentaControlador
 
     public function obtenerColoresRegistrados()
     {
-        header('Content-Type: application/json');
-        $input = json_decode(file_get_contents('php://input'), true);
+        header('Content-Type: application/json');        
         $producto_id = isset($_GET['producto_id']) ? intval($_GET['producto_id']) : null;
         $colores = $this->colorModelo->obtenerColoresRegistrados($producto_id);
         echo json_encode($colores);
+    }
+
+    public function obtenerStock()
+    {
+        header('Content-Type: application/json');
+        $input = json_decode(file_get_contents('php://input'), true);
+        $sucursal_id = $input['sucursal_id'] ?? null;
+        $producto_id = $input['producto_id'] ?? null;
+        $color_id = $input['color_id'] ?? null;
+
+        $stock = $this->productoModelo->obtenerStock($sucursal_id, $producto_id, $color_id);
+        echo json_encode(["stock" => $stock]);
     }
 }
 
