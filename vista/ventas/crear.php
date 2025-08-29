@@ -39,7 +39,7 @@
                 </div>
                 <h5>Detalle Ventas</h5>
                 <div class="row">
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-4 mb-3">
                         <label for="producto" class="form-label">Producto</label>
                         <select class="form-select" name="producto_id" id="producto_id">
                             <?php foreach ($productos as $producto): ?>
@@ -47,22 +47,34 @@
                             <?php endforeach; ?>
                         </select>
                     </div>
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-4 mb-3">
                         <label for="color" class="form-label">Color</label>
                         <select class="form-select" name="color_id" id="color_id" disabled>
                         </select>
                     </div>
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-4 mb-3">
                         <label for="stock" class="form-label">Stock</label>
-                        <input type="number" class="form-control" id="stock" name="stock" value="0" disabled>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="stock" name="stock" value="0" readonly>
+                            <span class="input-group-text">MTS</span>
+                        </div>
+                        <input type="hidden" id="costo" name="costo" readonly>
+                        <input type="hidden" id="categoria_id" name="categoria_id" readonly>
                     </div>
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-6 mb-3">
                         <label for="cantidad" class="form-label">Cantidad</label>
-                        <input type="number" class="form-control" id="cantidad" name="cantidad">
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="cantidad" name="cantidad">
+                            <span class="input-group-text">MTS</span>
+                        </div>
                     </div>
-                    <div class="col-md-3 mb-3">
+
+                    <div class="col-md-6 mb-3">
                         <label for="precio" class="form-label">Precio</label>
-                        <input type="number" class="form-control" id="precio" name="precio">
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="precio" name="precio">
+                            <span class="input-group-text">BS</span>
+                        </div>
                     </div>
                 </div>
                 <button type="button" class="btn btn-secondary" onclick="agregarProducto();">Agregar Producto</button>
@@ -75,6 +87,7 @@
                             <th>Cantidad</th>
                             <th>Precio</th>
                             <th>Subtotal</th>
+                            <th>Ganancias</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -89,14 +102,23 @@
     <script>
         const productos = [];
 
-        /* function agregarProducto() {
+        function agregarProducto() {
+            const cantidad = parseFloat(document.getElementById('cantidad').value);
+            const stock = parseFloat(document.getElementById('stock').value);
+            if (cantidad > stock) {
+                alert('La cantidad supera el stock disponible.');
+                return;
+            }
             const productoId = document.getElementById('producto_id').value;
             const colorId = document.getElementById('color_id').value;
-            const cantidad = document.getElementById('cantidad').value;
             const precio = document.getElementById('precio').value;
             const productoText = document.querySelector(`#producto_id option[value="${productoId}"]`).textContent;
             const colorText = document.querySelector(`#color_id option[value="${colorId}"]`).textContent;
-            const total = document.getElementById('total');
+            const totalInput = document.getElementById('total');
+            const total_gananciasInput = document.getElementById('total_ganancias');
+            const costo = parseFloat(document.getElementById('costo').value);
+
+            const ganancias = costo > 0 ? (precio - costo) * cantidad : 0;
 
             const nuevoProducto = {
                 producto: productoText,
@@ -105,10 +127,24 @@
                 precio: precio,
                 color_id: colorId,
                 producto_id: productoId,
-                subtotal: cantidad * precio
+                subtotal: cantidad * precio,
+                ganancias: ganancias
             };
-            total.value = parseFloat(total.value) + nuevoProducto.subtotal;
-            productos.push(nuevoProducto);
+
+            const producto = productos.find(p => p.producto_id === productoId && p.color_id === colorId);
+            if (producto) {
+                if (producto.cantidad + nuevoProducto.cantidad > stock) {
+                    alert('La cantidad supera el stock disponible.');
+                    return;
+                }
+                producto.cantidad += nuevoProducto.cantidad;
+                producto.subtotal += nuevoProducto.subtotal;
+                producto.ganancias += nuevoProducto.ganancias;
+            } else {
+                productos.push(nuevoProducto);
+            }
+            totalInput.value = parseFloat(totalInput.value) + nuevoProducto.subtotal;
+            total_gananciasInput.value = parseFloat(total_gananciasInput.value) + nuevoProducto.ganancias;
             actualizarTablaProductos();
         }
 
@@ -122,7 +158,8 @@
                 fila.insertCell(2).textContent = producto.cantidad;
                 fila.insertCell(3).textContent = producto.precio;
                 fila.insertCell(4).textContent = producto.subtotal;
-                const celdaAcciones = fila.insertCell(5);
+                fila.insertCell(5).textContent = producto.ganancias;
+                const celdaAcciones = fila.insertCell(6);
                 celdaAcciones.innerHTML = `<button class="btn btn-danger" onclick="eliminarProducto(${index})">Eliminar</button>`;
             });
         }
@@ -130,9 +167,10 @@
         function eliminarProducto(index) {
             const total = document.getElementById('total');
             total.value = parseFloat(total.value) - productos[index].subtotal;
+            const total_ganancias = document.getElementById('total_ganancias');
+            total_ganancias.value = parseFloat(total_ganancias.value) - productos[index].ganancias;
             productos.splice(index, 1);
             actualizarTablaProductos();
-
         }
 
         document.getElementById('formVenta').addEventListener('submit', function(event) {
@@ -140,7 +178,14 @@
             const productosInput = document.getElementById('productos');
             productosInput.value = JSON.stringify(productos);
             this.submit();
-        }); */
+        });
+
+        document.getElementById('sucursal_id').addEventListener('change', function() {
+            const sucursalId = this.value;
+            const productoId = document.getElementById('producto_id').value;
+            const colorId = document.getElementById('color_id').value;
+            obtenerStock(sucursalId, productoId, colorId);
+        });
 
         document.getElementById('producto_id').addEventListener('change', function() {
             const productoId = this.value;
@@ -193,11 +238,11 @@
                 .then(response => response.json())
                 .then(data => {
                     const stockInput = document.getElementById('stock');
+                    const costoInput = document.getElementById('costo');
+                    const categoriaInput = document.getElementById('categoria_id');
                     stockInput.value = data.stock ? data.stock : 0;
-                    console.log('Sucursal ID:', sucursal_id);
-                    console.log('Producto ID:', producto_id);
-                    console.log('Color ID:', color_id);
-                    console.log('Stock:', data.stock);
+                    costoInput.value = data.costo ? data.costo : 0;
+                    categoriaInput.value = data.categoria_id ? data.categoria_id : 0;
                 })
                 .catch(error => console.error('Error:', error));
         }

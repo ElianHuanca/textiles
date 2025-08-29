@@ -92,8 +92,8 @@ class VentaControlador
         $producto_id = $input['producto_id'] ?? null;
         $color_id = $input['color_id'] ?? null;
 
-        $stock = $this->productoModelo->obtenerStock($sucursal_id, $producto_id, $color_id);
-        echo json_encode(["stock" => $stock]);
+        $producto = $this->productoModelo->obtenerStock($sucursal_id, $producto_id, $color_id);
+        echo json_encode($producto);
     }
 }
 

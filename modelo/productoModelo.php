@@ -119,12 +119,14 @@ class ProductoModelo
 
     public function obtenerStock($sucursal_id, $producto_id, $color_id)
     {
-        $query = "SELECT stock FROM inventario WHERE sucursal_id = :sucursal_id AND producto_id = :producto_id AND color_id = :color_id";
+        $query = "SELECT stock, p.costo,p.categoria_id FROM inventario 
+        JOIN productos p ON inventario.producto_id = p.id
+        WHERE sucursal_id = :sucursal_id AND producto_id = :producto_id AND color_id = :color_id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':sucursal_id', $sucursal_id, PDO::PARAM_INT);
         $stmt->bindParam(':producto_id', $producto_id, PDO::PARAM_INT);
         $stmt->bindParam(':color_id', $color_id, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC)['stock'];
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 }
