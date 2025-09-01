@@ -129,4 +129,17 @@ class ProductoModelo
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function obtenerProductoPorVenta($venta_id, $producto_id, $color_id, $precio)
+    {
+        $query = "SELECT * FROM venta_producto
+        WHERE venta_id = :venta_id AND producto_id = :producto_id AND color_id = :color_id AND precio = :precio";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':venta_id', $venta_id, PDO::PARAM_INT);
+        $stmt->bindParam(':producto_id', $producto_id, PDO::PARAM_INT);
+        $stmt->bindParam(':color_id', $color_id, PDO::PARAM_INT);
+        $stmt->bindParam(':precio', $precio, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }

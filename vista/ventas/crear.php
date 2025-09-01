@@ -117,8 +117,9 @@
             const totalInput = document.getElementById('total');
             const total_gananciasInput = document.getElementById('total_ganancias');
             const costo = parseFloat(document.getElementById('costo').value);
+            const categoria_id = document.getElementById('categoria_id').value;
 
-            const ganancias = costo > 0 ? (precio - costo) * cantidad : 0;
+            const ganancias = categoria_id != 2 ? (precio - costo) * cantidad : 0;
 
             const nuevoProducto = {
                 producto: productoText,

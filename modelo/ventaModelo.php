@@ -1,14 +1,17 @@
 <?php
 
 require_once('../conexion/conexion.php');
+require_once('metodosModelo.php');
 
 class VentaModelo
 {
     private $db;
+    private $metodosModelo;
 
     public function __construct()
     {
         $this->db = Conexion::conectar();
+        $this->metodosModelo = new MetodosModelo();
     }
 
     public function obtenerVentasDatatable($search, $orderColumn, $orderDir, $start, $length)
@@ -58,5 +61,23 @@ class VentaModelo
         }
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+    }
+
+    public function obtenerVentaHoy($sucursal_id)
+    {
+        $query = "SELECT * FROM ventas WHERE DATE(fecha) = CURDATE() AND sucursal_id = :sucursal_id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':sucursal_id', $sucursal_id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function crearVenta($data,$tabla = 'ventas'){
+        return $this->metodosModelo->crear($data, $tabla);
+    }
+
+    public function actualizarVenta($id,$data,$tabla = 'ventas')
+    {
+        return $this->metodosModelo->editar($id, $data, $tabla);
     }
 }

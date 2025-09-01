@@ -76,6 +76,48 @@ class VentaControlador
         include '../vista/ventas/crear.php';
     }
 
+    public function crearVenta(){
+        $venta = $this->ventaModelo->obtenerVentaHoy($_POST['sucursal_id']);
+        if (!$venta) {
+            $data =  [
+                'sucursal_id' => $_POST['sucursal_id'],
+                'total' => $_POST['total'],
+                'descuento' => $_POST['descuento'],
+                'total_ganancias' => $_POST['total_ganancias']                
+            ];
+            $this->ventaModelo->crearVenta($data);
+        }else{
+            $data =  [                                
+                'total' => $venta['total'] + $_POST['total'],
+                'descuento' => $venta['descuento'] + $_POST['descuento'],
+                'total_ganancias' => $venta['total_ganancias'] + $_POST['total_ganancias']
+            ];
+            $this->ventaModelo->actualizarVenta($venta['id'],$data);
+        }
+        $productos = $_POST['productos'];
+        foreach ($productos as $producto) {
+            $productoVenta = $this->productoModelo->obtenerProductoPorVenta($venta['id'],$producto['producto_id'], $producto['color_id'],$producto['precio']);
+            if($productoVenta){
+                $data = [
+                    'cantidad' => $productoVenta['cantidad'] + $producto['cantidad'],
+                    'subtotal' => $productoVenta['subtotal'] + $producto['subtotal'],
+                    'ganancias' => $productoVenta['ganancias'] + $producto['ganancias']
+                ];
+                $this->ventaModelo->actualizarProductoVenta($venta['id'],$producto['producto_id'], $producto['color_id'],$producto['precio'], $data);
+            }else{
+                $data = [
+                    'venta_id' => $venta['id'],
+                    'producto_id' => $producto['producto_id'],
+                    'color_id' => $producto['color_id'],
+                    'cantidad' => $producto['cantidad'],
+                    'precio' => $producto['precio'],
+                    'subtotal' => $producto['subtotal'],
+                    'ganancias' => $producto['ganancias']
+                ];
+                $this->ventaModelo->crearProductoVenta($data);
+            }
+        }
+    }
     public function obtenerColoresRegistrados()
     {
         header('Content-Type: application/json');        
