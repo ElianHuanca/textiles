@@ -72,12 +72,33 @@ class VentaModelo
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function crearVenta($data,$tabla = 'ventas'){
+    public function crearVenta($data, $tabla = 'ventas')
+    {
         return $this->metodosModelo->crear($data, $tabla);
     }
 
-    public function actualizarVenta($id,$data,$tabla = 'ventas')
+    public function actualizarVenta($id, $data, $tabla = 'ventas')
     {
         return $this->metodosModelo->editar($id, $data, $tabla);
+    }
+
+    public function actualizarProductoVenta($venta_id, $producto_id, $color_id, $precio, $data)
+    {
+        $set = '';
+        foreach ($data as $key => $value) {
+            $set .= "$key=:$key ,";
+        }
+        $set = rtrim($set, ',');
+        $query = "UPDATE venta_producto SET $set WHERE venta_id = :venta_id AND producto_id = :producto_id AND color_id = :color_id AND precio = :precio";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':venta_id', $venta_id, PDO::PARAM_INT);
+        $stmt->bindParam(':producto_id', $producto_id, PDO::PARAM_INT);
+        $stmt->bindParam(':color_id', $color_id, PDO::PARAM_INT);
+        
+        $stmt->bindParam(':precio', $precio, PDO::PARAM_STR);
+        $stmt->bindParam(':cantidad', $data['cantidad'], PDO::PARAM_INT);
+        $stmt->bindParam(':subtotal', $data['subtotal'], PDO::PARAM_STR);
+        $stmt->bindParam(':ganancias', $data['ganancias'], PDO::PARAM_STR);
+        return $stmt->execute();
     }
 }

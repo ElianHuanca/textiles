@@ -111,13 +111,13 @@
             }
             const productoId = document.getElementById('producto_id').value;
             const colorId = document.getElementById('color_id').value;
-            const precio = document.getElementById('precio').value;
+            const precio = parseFloat(document.getElementById('precio').value);
             const productoText = document.querySelector(`#producto_id option[value="${productoId}"]`).textContent;
             const colorText = document.querySelector(`#color_id option[value="${colorId}"]`).textContent;
             const totalInput = document.getElementById('total');
             const total_gananciasInput = document.getElementById('total_ganancias');
             const costo = parseFloat(document.getElementById('costo').value);
-            const categoria_id = document.getElementById('categoria_id').value;
+            const categoria_id = parseInt(document.getElementById('categoria_id').value);
 
             const ganancias = categoria_id != 2 ? (precio - costo) * cantidad : 0;
 
