@@ -1,10 +1,9 @@
 <?php
-require_once('../connection/mysqlConnection.php');
-require_once('../model/compraModelo.php');
-require_once('../model/sucursalModelo.php');
-require_once('../model/productoModelo.php');
-require_once('../model/colorModelo.php');
-require_once('../model/tipogastoModelo.php');
+require_once('../modelo/compraModelo.php');
+require_once('../modelo/sucursalModelo.php');
+require_once('../modelo/productoModelo.php');
+require_once('../modelo/colorModelo.php');
+require_once('../modelo/tipogastoModelo.php');
 
 class CompraControlador
 {
@@ -16,17 +15,16 @@ class CompraControlador
 
     public function __construct()
     {
-        $db = Conexion::conectar();
-        $this->compraModelo = new CompraModelo($db);
-        $this->sucursalModelo = new SucursalModelo($db);
-        $this->productoModelo = new ProductoModelo($db);
-        $this->colorModelo = new ColorModelo($db);
-        $this->tipoGastoModelo = new TipoGastoModelo($db);
+        $this->compraModelo = new CompraModelo();
+        $this->sucursalModelo = new SucursalModelo();
+        $this->productoModelo = new ProductoModelo();
+        $this->colorModelo = new ColorModelo();
+        $this->tipoGastoModelo = new TipoGastoModelo();
     }
 
     public function obtenerCompras()
     {
-        include '../view/compras/index.php';
+        include '../vista/compras/index.php';
     }
 
     public function compras()
@@ -76,7 +74,7 @@ class CompraControlador
         $productos = $this->productoModelo->obtenerProductos();
         $colores = $this->colorModelo->obtenerColores();
         $tipos_gastos = $this->tipoGastoModelo->obtenerTiposGastos();
-        include '../view/compras/crear.php';
+        include '../vista/compras/crear.php';
     }
 
     public function crearCompra()

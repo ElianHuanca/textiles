@@ -26,15 +26,15 @@
                     </div>
                     <div class="col-md-3 mb-3">
                         <label for="total" class="form-label">Total Venta</label>
-                        <input type="number" class="form-control" id="total" name="total" value="0" readonly>
+                        <input type="text" class="form-control" id="total" name="total" value="0" readonly>
                     </div>
                     <div class="col-md-3 mb-3">
                         <label for="total_ganancias" class="form-label">Total Ganancias</label>
-                        <input type="number" class="form-control" id="total_ganancias" name="total_ganancias" value="0" readonly>
+                        <input type="text" class="form-control" id="total_ganancias" name="total_ganancias" value="0" readonly>
                     </div>
                     <div class="col-md-3 mb-3">
                         <label for="descuento" class="form-label">Descuento</label>
-                        <input type="number" class="form-control" id="descuento" name="descuento" value="0">
+                        <input type="text" class="form-control" id="descuento" name="descuento" value="0">
                     </div>
                 </div>
                 <h5>Detalle Ventas</h5>
@@ -55,7 +55,7 @@
                     <div class="col-md-4 mb-3">
                         <label for="stock" class="form-label">Stock</label>
                         <div class="input-group">
-                            <input type="number" class="form-control" id="stock" name="stock" value="0" readonly>
+                            <input type="text" class="form-control" id="stock" name="stock" value="0" readonly>
                             <span class="input-group-text">MTS</span>
                         </div>
                         <input type="hidden" id="costo" name="costo" readonly>
@@ -64,7 +64,7 @@
                     <div class="col-md-6 mb-3">
                         <label for="cantidad" class="form-label">Cantidad</label>
                         <div class="input-group">
-                            <input type="number" class="form-control" id="cantidad" name="cantidad">
+                            <input type="text" class="form-control" id="cantidad" name="cantidad">
                             <span class="input-group-text">MTS</span>
                         </div>
                     </div>
@@ -72,7 +72,7 @@
                     <div class="col-md-6 mb-3">
                         <label for="precio" class="form-label">Precio</label>
                         <div class="input-group">
-                            <input type="number" class="form-control" id="precio" name="precio">
+                            <input type="text" class="form-control" id="precio" name="precio">
                             <span class="input-group-text">BS</span>
                         </div>
                     </div>
@@ -128,7 +128,7 @@
                 precio: precio,
                 color_id: colorId,
                 producto_id: productoId,
-                subtotal: cantidad * precio,
+                subtotal: parseFloat((cantidad * precio).toFixed(2)),
                 ganancias: ganancias
             };
 
@@ -144,8 +144,8 @@
             } else {
                 productos.push(nuevoProducto);
             }
-            totalInput.value = parseFloat(totalInput.value) + nuevoProducto.subtotal;
-            total_gananciasInput.value = parseFloat(total_gananciasInput.value) + nuevoProducto.ganancias;
+            totalInput.value = (parseFloat(totalInput.value) + nuevoProducto.subtotal).toFixed(2);
+            total_gananciasInput.value = (parseFloat(total_gananciasInput.value) + nuevoProducto.ganancias).toFixed(2);
             actualizarTablaProductos();
         }
 

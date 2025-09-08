@@ -94,11 +94,15 @@ class VentaModelo
         $stmt->bindParam(':venta_id', $venta_id, PDO::PARAM_INT);
         $stmt->bindParam(':producto_id', $producto_id, PDO::PARAM_INT);
         $stmt->bindParam(':color_id', $color_id, PDO::PARAM_INT);
-        
         $stmt->bindParam(':precio', $precio, PDO::PARAM_STR);
-        $stmt->bindParam(':cantidad', $data['cantidad'], PDO::PARAM_INT);
-        $stmt->bindParam(':subtotal', $data['subtotal'], PDO::PARAM_STR);
-        $stmt->bindParam(':ganancias', $data['ganancias'], PDO::PARAM_STR);
+        foreach ($data as $key => &$value) {
+            $stmt->bindParam(":$key", $value);
+        }
         return $stmt->execute();
+    }
+
+    public function crearProductoVenta($data, $tabla = 'venta_producto')
+    {
+        return $this->metodosModelo->crear($data, $tabla);
     }
 }

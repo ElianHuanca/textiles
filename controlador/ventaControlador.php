@@ -38,21 +38,21 @@ class VentaControlador
         $data = [];
         $columnMap = ["id", "fecha", "total", "descuento", "total_ganancias", "sucursal"];
         $orderColumn = $columnMap[$orderColumnIndex] ?? "id";
-        $tickets = $this->ventaModelo->obtenerVentasDatatable($search, $orderColumn, $orderDir, $start, $length);
+        $ventas = $this->ventaModelo->obtenerVentasDatatable($search, $orderColumn, $orderDir, $start, $length);        
         $recordsTotal = $this->ventaModelo->obtenerCantidadVentas($search);
-        foreach ($tickets as $row) {
+        foreach ($ventas as $venta) {
             $data[] = [
-                "id" => $row["id"],
-                "fecha" => $row["fecha"] ?? '',
-                "total" => $row["total"] ?? '',
-                "descuento" => $row["descuento"] ?? '',
-                "total_ganancias" => $row["total_ganancias"] ?? '',
-                "sucursal" => $row["sucursal"] ?? '',
+                "id" => $venta["id"],
+                "fecha" => $venta["fecha"] ?? '',
+                "total" => $venta["total"] ?? '',
+                "descuento" => $venta["descuento"] ?? '',
+                "total_ganancias" => $venta["total_ganancias"] ?? '',
+                "sucursal" => $venta["sucursal"] ?? '',
                 "acciones" => '
-                                <a href="../controller/ventaControlador.php?action=editar&id=' . $row['id'] . '" style="text-decoration: none;">
+                                <a href="../controller/ventaControlador.php?action=editar&id=' . $venta['id'] . '" style="text-decoration: none;">
                                     <img src="../assets/editar.png" width="25px">
                                 </a>
-                                <a href="../controller/ventaControlador.php?action=eliminar&id=' . $row['id'] . '" style="text-decoration: none;"                        
+                                <a href="../controller/ventaControlador.php?action=eliminar&id=' . $venta['id'] . '" style="text-decoration: none;"                        
                                     onclick="return confirm(\'¿Estás seguro de que deseas eliminar esta venta?\');">
                                     <img src="../assets/borrar.png" width="25px">
                                 </a>'
@@ -76,8 +76,8 @@ class VentaControlador
         include '../vista/ventas/crear.php';
     }
 
-    public function crearVenta(){
-        $venta = $this->ventaModelo->obtenerVentaHoy($_POST['sucursal_id']);
+    public function crearVenta(){        
+        $venta = $this->ventaModelo->obtenerVentaHoy($_POST['sucursal_id']);        
         if (!$venta) {
             $data =  [
                 'sucursal_id' => $_POST['sucursal_id'],
@@ -94,7 +94,8 @@ class VentaControlador
             ];
             $this->ventaModelo->actualizarVenta($venta['id'],$data);
         }
-        $productos = $_POST['productos'];
+        $productos = json_decode($_POST['productos'], true); 
+        var_dump($productos);
         foreach ($productos as $producto) {
             $productoVenta = $this->productoModelo->obtenerProductoPorVenta($venta['id'],$producto['producto_id'], $producto['color_id'],$producto['precio']);
             if($productoVenta){
@@ -114,9 +115,11 @@ class VentaControlador
                     'subtotal' => $producto['subtotal'],
                     'ganancias' => $producto['ganancias']
                 ];
-                $this->ventaModelo->crearProductoVenta($data);
+                $this->ventaModelo->crearProductoVenta($data);                
             }
+            $this->productoModelo->actualizarStock($producto['producto_id'], $producto['color_id'], $_POST['sucursal_id'], $producto['cantidad'],'-');
         }
+        //header('Location: ../controlador/ventaControlador.php?action=obtenerVentas');
     }
     public function obtenerColoresRegistrados()
     {

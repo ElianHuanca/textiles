@@ -1,12 +1,16 @@
 <?php
+require_once('../conexion/conexion.php');
+require_once('metodosModelo.php');
 
 class CompraModelo
 {
     private $db;
+    private $metodosModelo;
 
-    public function __construct($db)
+    public function __construct()
     {
-        $this->db = $db;
+        $this->db = Conexion::conectar();
+        $this->metodosModelo = new MetodosModelo();
     }
     public function obtenerComprasDatatable($search, $orderColumn, $orderDir, $start, $length)
     {
@@ -84,5 +88,10 @@ class CompraModelo
             echo "Error: " . $e->getMessage();
             return false;
         }
+    }
+
+    public function crear($data, $tabla = 'compras')
+    {
+        return $this->metodosModelo->crear($data, $tabla);
     }
 }

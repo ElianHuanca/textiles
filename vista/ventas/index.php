@@ -7,7 +7,7 @@
     <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet">
     <title>Lista De Ventas</title>
-    <link rel="stylesheet" href="../view/css/tablestyle.css">
+    <link rel="stylesheet" href="../vista/css/tablestyle.css">
 </head>
 
 <body data-bs-theme="dark" style="color: #FFFFFF;">
@@ -49,10 +49,10 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     
-    <script src="../view/js/datatableconfig.js"></script>
+    <script src="../vista/js/datatableconfig.js"></script>
     <script>
         $(document).ready(function() {
-            const url = "../controller/ventaControlador.php?action=ventas";
+            const url = "../controlador/ventaControlador.php?action=ventas";
             const columns = [{
                     data: "id"
                 },

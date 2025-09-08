@@ -12,7 +12,8 @@ class ProductoModelo
         $this->metodosModelo = new MetodosModelo($this->db);
     }
 
-    public function obtenerProductos(){
+    public function obtenerProductos()
+    {
         $query = "SELECT * FROM productos WHERE activo = 1";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
@@ -79,15 +80,16 @@ class ProductoModelo
     public function editarProducto($id, $data, $tabla = 'productos')
     {
         return $this->metodosModelo->editar($id, $data, $tabla);
-    }    
+    }
 
     public function eliminarProducto($id)
     {
         $data = ['activo' => 0];
-        return $this->metodosModelo->editar($id, $data, 'productos');        
+        return $this->metodosModelo->editar($id, $data, 'productos');
     }
 
-    public function obtenerCosto($producto_id){
+    public function obtenerCosto($producto_id)
+    {
         $query = "SELECT costo FROM productos WHERE id= :producto_id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':producto_id', $producto_id, PDO::PARAM_INT);
@@ -95,7 +97,8 @@ class ProductoModelo
         return $stmt->fetch(PDO::FETCH_ASSOC)['costo'];
     }
 
-    public function actualizarCosto($producto_id, $costo){
+    public function actualizarCosto($producto_id, $costo)
+    {
         $query = "UPDATE productos SET costo= :costo WHERE id= :producto_id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':producto_id', $producto_id, PDO::PARAM_INT);
@@ -103,17 +106,30 @@ class ProductoModelo
         return $stmt->execute();
     }
 
-    public function actualizarStock($producto_id,$color_id,$sucursal_id, $cantidad){
-        $query = "UPDATE inventario SET stock= stock + :cantidad WHERE producto_id= :producto_id AND color_id= :color_id AND sucursal_id= :sucursal_id";
+    public function actualizarStock($producto_id, $color_id, $sucursal_id, $cantidad, $operacion = '+')
+    {
+        if (!in_array($operacion, ['+', '-'])) {
+            throw new InvalidArgumentException("Operación no válida");
+        }
+
+        $query = "UPDATE inventario 
+              SET stock = stock $operacion :cantidad 
+              WHERE producto_id = :producto_id 
+              AND color_id = :color_id 
+              AND sucursal_id = :sucursal_id";
+
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':producto_id', $producto_id, PDO::PARAM_INT);
         $stmt->bindParam(':color_id', $color_id, PDO::PARAM_INT);
         $stmt->bindParam(':sucursal_id', $sucursal_id, PDO::PARAM_INT);
         $stmt->bindValue(':cantidad', $cantidad);
+
         return $stmt->execute();
     }
 
-    public function agregarColor($data, $tabla = 'inventario'){
+
+    public function agregarColor($data, $tabla = 'inventario')
+    {
         return $this->metodosModelo->crear($data, $tabla);
     }
 
