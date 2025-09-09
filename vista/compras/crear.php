@@ -9,20 +9,19 @@
 </head>
 
 <body data-bs-theme="dark" style="color: #FFFFFF;">
-    <?php include '../view/components/navbar.php'; ?>
+    <?php include '../vista/componentes/navbar.php'; ?>
     <div class="d-flex" id="wrapper">
         <div class="w-100 p-4 text-center">
-            <?php include '../view/components/header.php'; ?>
+            <?php include '../vista/componentes/header.php'; ?>
             <h4>Registrar Compra</h4>
-            <form action="../controller/compraControlador.php?action=crearCompra" method="POST" id="formCompra">
+            <form action="../controlador/compraControlador.php?action=crearCompra" method="POST" id="formCompra">
                 <div class="row">
                     <div class="col-md-3 mb-3">
                         <label for="fecha" class="form-label">Fecha</label>
                         <input type="date" class="form-control" id="fecha" name="fecha" value="<?php echo date('Y-m-d'); ?>" required>
                     </div>
                     <div class="col-md-3 mb-3">
-                        <label for="sucursal" class="form-label">Sucursal</label>
-                        <!-- <input type="text" class="form-control" id="sucursal" name="sucursal" required> -->
+                        <label for="sucursal" class="form-label">Sucursal</label>                        
                         <select class="form-select" name="sucursal_id" id="sucursal_id">
                             <?php foreach ($sucursales as $sucursal): ?>
                                 <option value="<?php echo $sucursal['id']; ?>"><?php echo $sucursal['sucursal']; ?></option>

@@ -38,9 +38,9 @@ class CompraControlador
         $data = [];
         $columnMap = ["id", "fecha", "total", "total_gastos", "sucursal"];
         $orderColumn = $columnMap[$orderColumnIndex] ?? "id";
-        $tickets = $this->compraModelo->obtenerComprasDatatable($search, $orderColumn, $orderDir, $start, $length);
+        $compras = $this->compraModelo->obtenerComprasDatatable($search, $orderColumn, $orderDir, $start, $length);
         $recordsTotal = $this->compraModelo->obtenerCantidadCompras($search);
-        foreach ($tickets as $row) {
+        foreach ($compras as $row) {
             $data[] = [
                 "id" => $row["id"],
                 "fecha" => $row["fecha"] ?? '',

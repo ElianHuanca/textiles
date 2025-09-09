@@ -137,9 +137,9 @@ DELIMITER ; */
 
 
 
-INSERT INTO productos (producto) VALUES 
-('Razo Suizo SemiLicra'),
-('Razo Suizo Rigido');
+INSERT INTO productos (producto,categoria_id) VALUES 
+('Razo Suizo SemiLicra',1),
+('Razo Suizo Rigido',1);
 
 INSERT INTO colores (color, codigo) VALUES 
 ('Perla', 'EAE0C8'),

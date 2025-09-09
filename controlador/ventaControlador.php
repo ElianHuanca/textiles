@@ -49,10 +49,10 @@ class VentaControlador
                 "total_ganancias" => $venta["total_ganancias"] ?? '',
                 "sucursal" => $venta["sucursal"] ?? '',
                 "acciones" => '
-                                <a href="../controller/ventaControlador.php?action=editar&id=' . $venta['id'] . '" style="text-decoration: none;">
+                                <a href="../controlador/ventaControlador.php?action=editar&id=' . $venta['id'] . '" style="text-decoration: none;">
                                     <img src="../assets/editar.png" width="25px">
                                 </a>
-                                <a href="../controller/ventaControlador.php?action=eliminar&id=' . $venta['id'] . '" style="text-decoration: none;"                        
+                                <a href="../controlador/ventaControlador.php?action=eliminar&id=' . $venta['id'] . '" style="text-decoration: none;"                        
                                     onclick="return confirm(\'¿Estás seguro de que deseas eliminar esta venta?\');">
                                     <img src="../assets/borrar.png" width="25px">
                                 </a>'
@@ -85,7 +85,7 @@ class VentaControlador
                 'descuento' => $_POST['descuento'],
                 'total_ganancias' => $_POST['total_ganancias']                
             ];
-            $this->ventaModelo->crearVenta($data);
+            $venta = $this->ventaModelo->crearVenta($data);
         }else{
             $data =  [                                
                 'total' => $venta['total'] + $_POST['total'],
@@ -94,8 +94,7 @@ class VentaControlador
             ];
             $this->ventaModelo->actualizarVenta($venta['id'],$data);
         }
-        $productos = json_decode($_POST['productos'], true); 
-        var_dump($productos);
+        $productos = json_decode($_POST['productos'], true);         
         foreach ($productos as $producto) {
             $productoVenta = $this->productoModelo->obtenerProductoPorVenta($venta['id'],$producto['producto_id'], $producto['color_id'],$producto['precio']);
             if($productoVenta){
@@ -119,7 +118,7 @@ class VentaControlador
             }
             $this->productoModelo->actualizarStock($producto['producto_id'], $producto['color_id'], $_POST['sucursal_id'], $producto['cantidad'],'-');
         }
-        //header('Location: ../controlador/ventaControlador.php?action=obtenerVentas');
+        header('Location: ../controlador/ventaControlador.php?action=obtenerVentas');
     }
     public function obtenerColoresRegistrados()
     {

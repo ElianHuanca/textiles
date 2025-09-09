@@ -51,7 +51,7 @@
     <script src="../vista/js/datatableconfig.js"></script>
     <script>
         $(document).ready(function() {
-            const url = "../controller/compraControlador.php?action=compras";
+            const url = "../controlador/compraControlador.php?action=compras";
             const columns = [{
                     data: "id"
                 },
