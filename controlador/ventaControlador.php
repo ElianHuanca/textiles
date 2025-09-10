@@ -43,7 +43,7 @@ class VentaControlador
         foreach ($ventas as $venta) {
             $data[] = [
                 "id" => $venta["id"],
-                "fecha" => $venta["fecha"] ?? '',
+                "fecha" => $venta["fecha"] ? date("d/m/Y", strtotime($venta["fecha"])) : '',
                 "total" => $venta["total"] ?? '',
                 "descuento" => $venta["descuento"] ?? '',
                 "total_ganancias" => $venta["total_ganancias"] ?? '',
@@ -103,7 +103,7 @@ class VentaControlador
                     'subtotal' => $productoVenta['subtotal'] + $producto['subtotal'],
                     'ganancias' => $productoVenta['ganancias'] + $producto['ganancias']
                 ];
-                $this->ventaModelo->actualizarProductoVenta($venta['id'],$producto['producto_id'], $producto['color_id'],$producto['precio'], $data);
+                $this->ventaModelo->actualizarProductoVenta($productoVenta['id'], $data);
             }else{
                 $data = [
                     'venta_id' => $venta['id'],

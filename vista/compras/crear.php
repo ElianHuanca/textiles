@@ -119,7 +119,7 @@
 
         function agregarGasto() {
             const tipoGastoId = document.getElementById('tipo_gasto_id').value;
-            const gasto = document.getElementById('gasto').value;
+            const gasto = parseFloat(document.getElementById('gasto').value);
             const tipoGastoText = document.querySelector(`#tipo_gasto_id option[value="${tipoGastoId}"]`).textContent;
             const totalGastos = document.getElementById('total_gastos');
             const nuevoGasto = {
@@ -128,7 +128,7 @@
                 gasto: gasto
             };
             gastos.push(nuevoGasto);
-            totalGastos.value = parseFloat(totalGastos.value) + parseFloat(gasto);
+            totalGastos.value = parseFloat(totalGastos.value) + gasto;
             actualizarTablaGastos();
         }
 
@@ -154,8 +154,8 @@
         function agregarProducto() {
             const productoId = document.getElementById('producto_id').value;
             const colorId = document.getElementById('color_id').value;
-            const cantidad = document.getElementById('cantidad').value;
-            const precio = document.getElementById('precio').value;
+            const cantidad = parseFloat(document.getElementById('cantidad').value);
+            const precio = parseFloat(document.getElementById('precio').value);
             const productoText = document.querySelector(`#producto_id option[value="${productoId}"]`).textContent;
             const colorText = document.querySelector(`#color_id option[value="${colorId}"]`).textContent;
             const total = document.getElementById('total');
@@ -167,7 +167,7 @@
                 precio: precio,
                 color_id: colorId,
                 producto_id: productoId,
-                subtotal: cantidad * precio
+                subtotal: parseFloat((cantidad * precio).toFixed(2))
             };
             total.value = parseFloat(total.value) + nuevoProducto.subtotal;
             productos.push(nuevoProducto);

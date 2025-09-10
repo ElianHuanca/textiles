@@ -106,11 +106,13 @@ class CompraControlador
                     'color_id' => $producto['color_id'],
                     'cantidad' => $producto['cantidad'],
                     'precio' => $producto['precio'],
-                    'subtotal' => $producto['subtotal']                    
+                    'subtotal' => $producto['subtotal']
                 ];
-                $dataProducto = $this->compraModelo->crear($dataProducto, 'compra_producto');            
-                $dataProducto['gasto'] = $producto['subtotal'] / $dataCompra['total'] * $dataCompra['total_gastos'];
-                $this->costoPromedioPonderado($dataProducto);
+                $dataProducto = $this->compraModelo->crear($dataProducto, 'compra_producto');
+                if ($producto['precio'] != 0) {
+                    $dataProducto['gasto'] = $producto['subtotal'] / $dataCompra['total'] * $dataCompra['total_gastos'];
+                    $this->costoPromedioPonderado($dataProducto);
+                }
                 $this->productoModelo->actualizarStock($dataProducto['producto_id'], $dataProducto['color_id'], $_POST['sucursal_id'], $producto['cantidad']);
             }
         }
@@ -140,7 +142,7 @@ class CompraControlador
         $stockTotal = $stock - $dataProducto['cantidad'];
         if ($stockTotal > 0) {
             $costoUnitarioPromedio = $costoTotal / $stockTotal;
-        } else {        
+        } else {
             $costoUnitarioPromedio = 0;
         }
         $this->productoModelo->actualizarCosto($dataProducto['producto_id'], $costoUnitarioPromedio);
@@ -161,9 +163,9 @@ class CompraControlador
                     'subtotal' => $producto['subtotal'],
                     'gasto' => $producto['subtotal'] / $compra['total'] * $compra['total_gastos']
                 ];
-                $this->revertirCostoPromedioPonderado($dataProducto);   
-                $this->productoModelo->actualizarStock($producto['producto_id'], $producto['color_id'], $compra['sucursal_id'], -$producto['cantidad']);                             
-            }            
+                $this->revertirCostoPromedioPonderado($dataProducto);
+                $this->productoModelo->actualizarStock($producto['producto_id'], $producto['color_id'], $compra['sucursal_id'], -$producto['cantidad']);
+            }
         }
         $this->compraModelo->eliminar($id);
         header('Location: ../controlador/compraControlador.php?action=obtenerCompras');

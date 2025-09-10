@@ -44,7 +44,7 @@ class VentaModelo
     {
         $query = "SELECT COUNT(*) total 
         FROM ventas v
-        JOIN sucursales s ON s.id = c.sucursal_id
+        JOIN sucursales s ON s.id = v.sucursal_id
         WHERE 1 = 1 ";
         if (!empty($search)) {
             $query .= " AND ( v.fecha LIKE :search
@@ -82,23 +82,9 @@ class VentaModelo
         return $this->metodosModelo->editar($id, $data, $tabla);
     }
 
-    public function actualizarProductoVenta($venta_id, $producto_id, $color_id, $precio, $data)
+    public function actualizarProductoVenta($id, $data, $tabla = 'venta_producto')
     {
-        $set = '';
-        foreach ($data as $key => $value) {
-            $set .= "$key=:$key ,";
-        }
-        $set = rtrim($set, ',');
-        $query = "UPDATE venta_producto SET $set WHERE venta_id = :venta_id AND producto_id = :producto_id AND color_id = :color_id AND precio = :precio";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':venta_id', $venta_id, PDO::PARAM_INT);
-        $stmt->bindParam(':producto_id', $producto_id, PDO::PARAM_INT);
-        $stmt->bindParam(':color_id', $color_id, PDO::PARAM_INT);
-        $stmt->bindParam(':precio', $precio, PDO::PARAM_STR);
-        foreach ($data as $key => &$value) {
-            $stmt->bindParam(":$key", $value);
-        }
-        return $stmt->execute();
+        return $this->metodosModelo->editar($id, $data, $tabla);
     }
 
     public function crearProductoVenta($data, $tabla = 'venta_producto')

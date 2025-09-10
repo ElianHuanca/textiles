@@ -49,15 +49,15 @@ CREATE TABLE ventas(
     FOREIGN KEY (sucursal_id) REFERENCES sucursales(id)
 );
 
-CREATE TABLE venta_producto (    
+CREATE TABLE venta_producto (   
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     venta_id INT UNSIGNED ,
     producto_id TINYINT UNSIGNED ,
     color_id TINYINT UNSIGNED ,
     cantidad DECIMAL(6,2) ,
     precio DECIMAL(6,2) ,
     subtotal DECIMAL(6,2) ,
-    ganancias DECIMAL(6,2) ,
-    PRIMARY KEY (venta_id, producto_id, color_id),
+    ganancias DECIMAL(6,2) ,    
     FOREIGN KEY (venta_id) REFERENCES ventas(id) ON DELETE CASCADE,
     FOREIGN KEY (producto_id) REFERENCES productos(id),
     FOREIGN KEY (color_id) REFERENCES colores(id)
@@ -65,10 +65,10 @@ CREATE TABLE venta_producto (
 
 CREATE TABLE compras(
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    sucursal_id TINYINT UNSIGNED ,
-    fecha DATE ,
-    total DECIMAL(6,2) ,
-    total_gastos DECIMAL(6,2) ,
+    sucursal_id TINYINT UNSIGNED,
+    fecha DATE,
+    total DECIMAL(6,2),
+    total_gastos DECIMAL(6,2),
     FOREIGN KEY (sucursal_id) REFERENCES sucursales(id)
 );
 
@@ -135,16 +135,24 @@ END$$
 
 DELIMITER ; */
 
-
-
-INSERT INTO productos (producto,categoria_id) VALUES 
-('Razo Suizo SemiLicra',1),
-('Razo Suizo Rigido',1);
-
 INSERT INTO colores (color, codigo) VALUES 
-('Perla', 'EAE0C8'),
 ('Blanco', 'FFFFFF'),
-('Negro', '000000');
+('Negro', '000000'),
+('Fuchsia', 'FF00FF'),
+('Verde Agua', '00FFFF'),
+('Guindo', '800000'),
+('Azul Electrico', '0000FF'),
+('Verde Botella', '006B3F'),
+('Azul Marino','000080'),
+('Amarillo', 'FFFF00'),
+('Lila','D29BFD'),
+('Rojo', 'FF0000'),
+('Rosado', 'FF69B4'),
+('Rosado Bebe', 'FFB6C1'),
+('Celeste', '00BFFF'),
+('Celeste Azulado', '6DACEF'),
+('Palo De Rosa', 'D7A9A9'),
+('Perla', 'EAE0C8');
 
 INSERT INTO tipos_gastos (tipo_gasto) VALUES 
 ('Transporte Terrestre'),

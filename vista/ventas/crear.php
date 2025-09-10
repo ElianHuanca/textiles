@@ -109,14 +109,21 @@
                 alert('La cantidad supera el stock disponible.');
                 return;
             }
-            const productoId = document.getElementById('producto_id').value;
-            const colorId = document.getElementById('color_id').value;
+
             const precio = parseFloat(document.getElementById('precio').value);
+            const costo = parseFloat(document.getElementById('costo').value);
+
+            if (costo > precio) {
+                alert('El precio no puede ser menor al costo.');
+                return;
+            }
+
+            const productoId = document.getElementById('producto_id').value;
+            const colorId = document.getElementById('color_id').value;            
             const productoText = document.querySelector(`#producto_id option[value="${productoId}"]`).textContent;
             const colorText = document.querySelector(`#color_id option[value="${colorId}"]`).textContent;
             const totalInput = document.getElementById('total');
-            const total_gananciasInput = document.getElementById('total_ganancias');
-            const costo = parseFloat(document.getElementById('costo').value);
+            const total_gananciasInput = document.getElementById('total_ganancias');            
             const categoria_id = parseInt(document.getElementById('categoria_id').value);
 
             const ganancias = categoria_id != 2 ? (precio - costo) * cantidad : 0;
@@ -129,7 +136,7 @@
                 color_id: colorId,
                 producto_id: productoId,
                 subtotal: parseFloat((cantidad * precio).toFixed(2)),
-                ganancias: ganancias
+                ganancias: parseFloat((ganancias).toFixed(2))
             };
 
             const producto = productos.find(p => p.producto_id === productoId && p.color_id === colorId);
