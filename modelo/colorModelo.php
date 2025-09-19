@@ -79,8 +79,9 @@ class ColorModelo
     {
         $query = "SELECT c.* FROM colores c
                   JOIN inventario i ON c.id = i.color_id
-                  WHERE i.producto_id = :productoId
-                  GROUP BY c.id";
+                  WHERE i.producto_id = :productoId                  
+                  GROUP BY c.id
+                  ORDER BY c.color ASC";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':productoId', $productoId, PDO::PARAM_INT);
         $stmt->execute();

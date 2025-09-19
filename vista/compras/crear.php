@@ -21,7 +21,7 @@
                         <input type="date" class="form-control" id="fecha" name="fecha" value="<?php echo date('Y-m-d'); ?>" required>
                     </div>
                     <div class="col-md-3 mb-3">
-                        <label for="sucursal" class="form-label">Sucursal</label>                        
+                        <label for="sucursal" class="form-label">Sucursal</label>
                         <select class="form-select" name="sucursal_id" id="sucursal_id">
                             <?php foreach ($sucursales as $sucursal): ?>
                                 <option value="<?php echo $sucursal['id']; ?>"><?php echo $sucursal['sucursal']; ?></option>
@@ -49,10 +49,7 @@
                     </div>
                     <div class="col-md-3 mb-3">
                         <label for="color" class="form-label">Color</label>
-                        <select class="form-select" name="color_id" id="color_id">
-                            <?php foreach ($colores as $color): ?>
-                                <option value="<?php echo $color['id']; ?>"><?php echo $color['color']; ?></option>
-                            <?php endforeach; ?>
+                        <select class="form-select" name="color_id" id="color_id">                            
                         </select>
                     </div>
                     <div class="col-md-3 mb-3">
@@ -197,7 +194,7 @@
 
         }
 
-        document.getElementById('formCompra').addEventListener('submit', function (event) {
+        document.getElementById('formCompra').addEventListener('submit', function(event) {
             event.preventDefault();
             const productosInput = document.getElementById('productos');
             const gastosInput = document.getElementById('gastos');
@@ -205,6 +202,38 @@
             gastosInput.value = JSON.stringify(gastos);
             this.submit();
         });
+
+        const producto_id = document.getElementById('producto_id').value;
+        obtenerColoresPorProducto(producto_id);
+
+        document.getElementById('producto_id').addEventListener('change', function() {
+            const productoId = this.value;
+            obtenerColoresPorProducto(productoId);
+        });
+
+        function obtenerColoresPorProducto(productoId) {
+            fetch(`../controlador/ventaControlador.php?action=obtenerColoresRegistrados&producto_id=${productoId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const colorSelect = document.getElementById('color_id');
+                    if (data.length > 0) {
+                        colorSelect.innerHTML = '';
+                        data.forEach(color => {
+                            const option = document.createElement('option');
+                            option.value = color.id;
+                            option.textContent = color.color;
+                            colorSelect.appendChild(option);
+                        });
+                        colorSelect.disabled = false;
+                    } else {
+                        colorSelect.innerHTML = '<option value="">No hay colores disponibles</option>';
+                        colorSelect.disabled = true;
+                    }
+                    /* const color_id = document.getElementById('color_id').value;
+                    const sucursal_id = document.getElementById('sucursal_id').value;
+                    obtenerStock(sucursal_id, productoId, color_id); */
+                });
+        }
     </script>
 </body>
 

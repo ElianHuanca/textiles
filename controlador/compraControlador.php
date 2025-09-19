@@ -43,7 +43,7 @@ class CompraControlador
         foreach ($compras as $row) {
             $data[] = [
                 "id" => $row["id"],
-                "fecha" => $row["fecha"] ?? '',
+                "fecha" => $row["fecha"] ? date("d/m/Y", strtotime($row["fecha"])) : '',
                 "total" => $row["total"] ?? '',
                 "total_gastos" => $row["total_gastos"] ?? '',
                 "sucursal" => $row["sucursal"] ?? '',
@@ -72,7 +72,7 @@ class CompraControlador
     {
         $sucursales = $this->sucursalModelo->obtenerSucursales();
         $productos = $this->productoModelo->obtenerProductos();
-        $colores = $this->colorModelo->obtenerColores();
+        //$colores = $this->colorModelo->obtenerColores();
         $tipos_gastos = $this->tipoGastoModelo->obtenerTiposGastos();
         include '../vista/compras/crear.php';
     }

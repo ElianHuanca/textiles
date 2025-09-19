@@ -161,3 +161,10 @@ INSERT INTO tipos_gastos (tipo_gasto) VALUES
 ('Nacionalizacion'),
 ('Poliza'),
 ('Taxi');
+
+SELECT p.producto,c.color,i.stock 
+FROM inventario i 
+JOIN productos p on p.id=i.producto_id AND p.id IN(1,3,5,6) 
+JOIN colores c ON c.id=i.color_id 
+WHERE i.sucursal_id=1 AND i.stock < 4
+ORDER BY p.producto,c.color
